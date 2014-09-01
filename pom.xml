@@ -1,0 +1,7 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.antumbrastation.rogueinterface</groupId>
+    <artifactId>rogueinterface</artifactId>
+    <name>AntumbraStation Rogue Interface</name>
+    <version>0.1-SNAPSHOT</version>
+</project>
