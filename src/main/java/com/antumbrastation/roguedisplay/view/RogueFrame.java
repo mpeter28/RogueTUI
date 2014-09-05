@@ -4,7 +4,6 @@ import com.antumbrastation.roguedisplay.components.DisplayComponent;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.concurrent.Semaphore;
 
 public class RogueFrame extends JFrame {
 
@@ -12,14 +11,11 @@ public class RogueFrame extends JFrame {
     private int columnWidth, rowHeight;
 
     private DisplayComponent root;
-    private Semaphore taskLock;
 
-    public RogueFrame(String title, DisplayComponent root, Semaphore taskLock,
-                      int rows, int columns, Font font, ColorPalette colors) {
+    public RogueFrame(String title, DisplayComponent root, int rows, int columns, Font font, ColorPalette colors) {
         super(title);
 
         this.root = root;
-        this.taskLock = taskLock;
 
         rowHeight = font.getSize();
         columnWidth = rowHeight * 2 / 3;
@@ -35,13 +31,12 @@ public class RogueFrame extends JFrame {
     }
 
     public void paint(Graphics g) {
-        taskLock.acquireUninterruptibly();
         super.paint(g);
-        taskLock.release();
     }
 
     public void reDraw() {
         root.display(panel.view(), true);
+        repaint();
     }
 
     public int getRowWidth() {

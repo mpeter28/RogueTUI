@@ -6,26 +6,18 @@ import com.antumbrastation.roguedisplay.view.RogueFrame;
 import com.antumbrastation.roguedisplay.view.ColorPalette;
 
 import java.awt.*;
-import java.util.concurrent.Semaphore;
 
 public class RogueDisplay {
-    Semaphore taskLock;
     Controller control;
     RogueFrame view;
 
     public RogueDisplay(String title, DisplayComponent root, int rows, int columns, Font font, ColorPalette colors) {
-        taskLock = new Semaphore(1, true);
+        view = new RogueFrame(title, root, rows, columns, font, colors);
+        control = new Controller(view);
 
-        control = new Controller(view, taskLock);
-        view = new RogueFrame(title, root, taskLock, rows, columns, font, colors);
-
-        KeyPressLogger keyPress = new KeyPressLogger(control);
-        //MouseClickLogger mouseClick = new MouseClickLogger(control, view.getRowHeight(), view.getRowWidth());
-        //MouseMoveLogger mouseMove = new MouseMoveLogger(control, view.getRowHeight(), view.getRowWidth());
-
-        view.addKeyListener(keyPress);
-        //view.addMouseListener(mouseClick);
-        //view.addMouseMotionListener(mouseMove);
+        view.addKeyListener(control);
+        view.addMouseListener(control);
+        view.addMouseMotionListener(control);
     }
 
     public void runTask(InputTask task) {
@@ -43,6 +35,5 @@ public class RogueDisplay {
 
     public RogueDisplay(String title, DisplayComponent root, int rows, int columns) {
         this(title, root, rows, columns, new Font(Font.MONOSPACED, Font.BOLD, 18), new ColorPalette());
-        taskLock = new Semaphore(1, true);
     }
 }
