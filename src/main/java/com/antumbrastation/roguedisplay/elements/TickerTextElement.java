@@ -1,11 +1,11 @@
-package com.antumbrastation.roguedisplay.components;
+package com.antumbrastation.roguedisplay.elements;
 
 import com.antumbrastation.roguedisplay.view.DisplayView;
 import com.antumbrastation.roguedisplay.view.Window;
 
 import java.util.ArrayList;
 
-public class TickerTextElement implements DisplayComponent {
+public class TickerTextElement implements DisplayElement {
 
     private ArrayList<String> pageWords;
     private ArrayList<Integer> pageColors;
@@ -20,7 +20,7 @@ public class TickerTextElement implements DisplayComponent {
         pageColors = new ArrayList<Integer>();
     }
 
-    public void display(DisplayView view, boolean focus) {
+    public void display(DisplayView view) {
         view.setWindow(window);
         view.writeFill(' ', -1, -1);
 
@@ -78,9 +78,5 @@ public class TickerTextElement implements DisplayComponent {
 
         nextWord = 0;
         return true;
-    }
-
-    public boolean giveFocus(DisplayComponent focus) {
-        return this == focus;
     }
 }

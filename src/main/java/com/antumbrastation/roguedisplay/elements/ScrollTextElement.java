@@ -1,9 +1,9 @@
-package com.antumbrastation.roguedisplay.components;
+package com.antumbrastation.roguedisplay.elements;
 
 import com.antumbrastation.roguedisplay.view.DisplayView;
 import com.antumbrastation.roguedisplay.view.Window;
 
-public class ScrollTextElement implements DisplayComponent {
+public class ScrollTextElement implements DisplayElement {
 
     private Window window;
     private String[] lines;
@@ -22,7 +22,7 @@ public class ScrollTextElement implements DisplayComponent {
         highlights = new int[height];
     }
 
-    public void addLine(String line, int color, int highlight) {
+    public void writeLine(String line, int color, int highlight) {
         for (int i = lines.length - 1; i > 0; i++) {
             lines[i] = lines[i-1];
             colors[i] = colors[i-1];
@@ -34,7 +34,7 @@ public class ScrollTextElement implements DisplayComponent {
         highlights[0] = highlight;
     }
 
-    public void display(DisplayView view, boolean focus) {
+    public void display(DisplayView view) {
         view.setWindow(window);
         view.writeFill(' ', -1, -1);
 
@@ -47,9 +47,5 @@ public class ScrollTextElement implements DisplayComponent {
                 view.writeLine(lines[i], i, 0, colors[i], highlights[i]);
             }
         }
-    }
-
-    public boolean giveFocus(DisplayComponent focus) {
-        return focus == this;
     }
 }

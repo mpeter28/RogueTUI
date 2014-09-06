@@ -1,9 +1,9 @@
-package com.antumbrastation.roguedisplay.components;
+package com.antumbrastation.roguedisplay.elements;
 
 import com.antumbrastation.roguedisplay.view.DisplayView;
 import com.antumbrastation.roguedisplay.view.Window;
 
-public class MapElement implements DisplayComponent {
+public class MapElement implements DisplayElement {
 
     private Window window;
 
@@ -28,7 +28,7 @@ public class MapElement implements DisplayComponent {
         this.textColor[y][x] = textColor;
     }
 
-    public void display(DisplayView view, boolean focus) {
+    public void display(DisplayView view) {
         view.setWindow(window);
 
         int width = window.getWidth();
@@ -37,9 +37,5 @@ public class MapElement implements DisplayComponent {
         for (int i = 0; i < height; i++)
             for (int j = 0; j < width; j++)
                 view.writeChar(text[i][j], i, j, textColor[i][j], highlight[i][j]);
-    }
-
-    public boolean giveFocus(DisplayComponent focus) {
-        return this == focus;
     }
 }

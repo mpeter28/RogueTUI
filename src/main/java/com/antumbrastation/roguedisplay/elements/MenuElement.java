@@ -1,9 +1,9 @@
-package com.antumbrastation.roguedisplay.components;
+package com.antumbrastation.roguedisplay.elements;
 
 import com.antumbrastation.roguedisplay.view.DisplayView;
 import com.antumbrastation.roguedisplay.view.Window;
 
-public class MenuElement implements DisplayComponent {
+public class MenuElement implements DisplayElement {
 
     private Window window;
 
@@ -29,7 +29,7 @@ public class MenuElement implements DisplayComponent {
         bottomOption = Math.min(keys.length, window.getHeight());
     }
 
-    public void display(DisplayView view, boolean focus) {
+    public void display(DisplayView view) {
         view.setWindow(window);
         view.writeFill(' ', -1, -1);
 
@@ -90,9 +90,5 @@ public class MenuElement implements DisplayComponent {
         if (topOption < 0) {
             topOption = 0;
         }
-    }
-
-    public boolean giveFocus(DisplayComponent focus) {
-        return focus == this;
     }
 }

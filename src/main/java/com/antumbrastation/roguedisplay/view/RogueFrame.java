@@ -1,6 +1,6 @@
 package com.antumbrastation.roguedisplay.view;
 
-import com.antumbrastation.roguedisplay.components.DisplayComponent;
+import com.antumbrastation.roguedisplay.elements.ElementKeeper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,9 +10,9 @@ public class RogueFrame extends JFrame {
     private TextPanel panel;
     private int columnWidth, rowHeight;
 
-    private DisplayComponent root;
+    private ElementKeeper root;
 
-    public RogueFrame(String title, DisplayComponent root, int rows, int columns, Font font, ColorPalette colors) {
+    public RogueFrame(String title, ElementKeeper root, int rows, int columns, Font font, ColorPalette colors) {
         super(title);
 
         this.root = root;
@@ -35,7 +35,7 @@ public class RogueFrame extends JFrame {
     }
 
     public void reDraw() {
-        root.display(panel.view(), true);
+        root.displayComponents(panel.view());
         repaint();
     }
 

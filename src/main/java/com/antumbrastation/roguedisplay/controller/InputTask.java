@@ -1,7 +1,5 @@
 package com.antumbrastation.roguedisplay.controller;
 
-import com.antumbrastation.roguedisplay.components.MapElement;
-
 public interface InputTask {
     public boolean initialize();
     public boolean processKeyHit(char key);
