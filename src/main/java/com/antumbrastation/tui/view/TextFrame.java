@@ -1,18 +1,18 @@
-package com.antumbrastation.roguedisplay.view;
+package com.antumbrastation.tui.view;
 
-import com.antumbrastation.roguedisplay.elements.ElementKeeper;
+import com.antumbrastation.tui.elements.ElementKeeper;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class RogueFrame extends JFrame {
+public class TextFrame extends JFrame {
 
     private TextPanel panel;
     private int columnWidth, rowHeight;
 
     private ElementKeeper root;
 
-    public RogueFrame(String title, ElementKeeper root, int rows, int columns, Font font, ColorPalette colors) {
+    public TextFrame(String title, ElementKeeper root, int rows, int columns, Font font, ColorPalette colors) {
         super(title);
 
         this.root = root;

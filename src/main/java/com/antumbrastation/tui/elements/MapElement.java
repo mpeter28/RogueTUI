@@ -1,7 +1,7 @@
-package com.antumbrastation.roguedisplay.elements;
+package com.antumbrastation.tui.elements;
 
-import com.antumbrastation.roguedisplay.view.DisplayView;
-import com.antumbrastation.roguedisplay.view.Window;
+import com.antumbrastation.tui.view.DisplayView;
+import com.antumbrastation.tui.view.Window;
 
 public class MapElement implements DisplayElement {
 

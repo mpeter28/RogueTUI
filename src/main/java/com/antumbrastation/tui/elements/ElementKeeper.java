@@ -1,6 +1,6 @@
-package com.antumbrastation.roguedisplay.elements;
+package com.antumbrastation.tui.elements;
 
-import com.antumbrastation.roguedisplay.view.DisplayView;
+import com.antumbrastation.tui.view.DisplayView;
 
 import java.util.ArrayList;
 import java.util.HashMap;

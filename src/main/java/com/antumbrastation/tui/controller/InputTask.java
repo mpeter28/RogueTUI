@@ -1,4 +1,4 @@
-package com.antumbrastation.roguedisplay.controller;
+package com.antumbrastation.tui.controller;
 
 public interface InputTask {
     public boolean initialize();

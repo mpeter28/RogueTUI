@@ -1,6 +1,6 @@
-package com.antumbrastation.roguedisplay.controller;
+package com.antumbrastation.tui.controller;
 
-import com.antumbrastation.roguedisplay.view.RogueFrame;
+import com.antumbrastation.tui.view.TextFrame;
 
 import java.awt.event.*;
 import java.util.concurrent.BlockingQueue;
@@ -8,7 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class Controller implements KeyListener, MouseListener, MouseMotionListener {
-    private RogueFrame frame;
+    private TextFrame frame;
     private BlockingQueue queue;
 
     private int height;
@@ -20,7 +20,7 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
     private int mouseRow;
     private int mouseColumn;
 
-    public Controller(RogueFrame frame) {
+    public Controller(TextFrame frame) {
         this.frame = frame;
 
         mouseRow = -1;

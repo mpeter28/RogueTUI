@@ -1,4 +1,4 @@
-package com.antumbrastation.roguedisplay.view;
+package com.antumbrastation.tui.view;
 
 import java.awt.*;
 
