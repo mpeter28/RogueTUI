@@ -49,7 +49,7 @@ public class TickerTextElement implements DisplayElement {
         }
 
         if (nextWord < pageWords.size())
-            view.writeLine("-- More --", window.getHeight() - 1, window.getWidth() - 11, 1, -1);
+            view.writeLine("-- More --", window.getHeight() - 1, window.getWidth() - 11, -1, -1);
     }
 
     public void addMessage(String message, int color) {

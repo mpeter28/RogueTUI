@@ -5,25 +5,25 @@ import java.awt.*;
 public class ColorPalette {
 
     private Color[] colors;
-    private String[] colorNames;
+    private Color textColor;
+    private Color highlightColor;
 
     public ColorPalette() {
-        colors = new Color[]{Color.black, Color.darkGray, Color.gray, Color.white, new Color(255, 0, 0), new Color(100, 0, 0), new Color(0, 255, 0), new Color(0, 100, 0), new Color(0, 0, 255), new Color(0, 0, 100), new Color(255, 255, 0), new Color(100, 100, 0), new Color(0, 255, 255), new Color(0, 100, 100), new Color(255, 0, 255), new Color(100, 0, 100)};
-        colorNames = new String[]{"Black", "Dark Gray", "Light Gray", "White", "Red", "Dark Red", "Green", "Dark Green", "Blue", "Dark Blue", "Yellow", "Brown", "Turquoise", "Teal", "Magenta", "Purple"};
+        colors = new Color[]{ Color.black, new Color(128, 0, 0), new Color(0, 128, 0),
+                new Color(128, 128, 0), new Color(0, 0, 128),
+                new Color(128, 0, 128), new Color(0, 128, 128),
+                new Color(128, 128, 128), new Color(64, 64, 64), Color.red,
+                Color.green, Color.yellow, Color.blue, Color.magenta, Color.cyan,
+                Color.white };
+
+        textColor = new Color(128, 128, 128);
+        highlightColor = Color.black;
     }
 
-    public ColorPalette(Color[] colors, String[] colorNames) {
+    public ColorPalette(Color[] colors, Color textColor, Color highlightColor) {
         this.colors = colors;
-        this.colorNames = colorNames;
-    }
-
-    public int nameToIndex(String color) {
-        for (int i = 0; i < color.length(); i++) {
-            if (color.equals(colorNames[i]))
-                return i;
-        }
-
-        return -1;
+        this.textColor = textColor;
+        this.highlightColor = highlightColor;
     }
 
     public Color indexToColor(int index) {
@@ -31,6 +31,14 @@ public class ColorPalette {
             return Color.black;
 
         return colors[index];
+    }
+
+    public Color defaultTextColor() {
+        return textColor;
+    }
+
+    public Color defaultHighlightColor() {
+        return highlightColor;
     }
 
 }

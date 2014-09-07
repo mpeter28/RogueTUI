@@ -6,9 +6,6 @@ import java.awt.*;
 public class TextPanel extends JPanel{
 
     private ColorPalette colors;
-    private Color DEFAULTCOLOR = Color.black;
-    private Color DEFAULTBACK = Color.black;
-
     private Font font;
 
     private int rows, columns;
@@ -43,12 +40,12 @@ public class TextPanel extends JPanel{
                 if (textColor[row][col] != -1)
                     g.setColor(colors.indexToColor(textColor[row][col]));
                 else
-                    g.setColor(DEFAULTCOLOR);
+                    g.setColor(colors.defaultTextColor());
 
                 if (highlight[row][col] != -1)
                     g.setBackground(colors.indexToColor(highlight[row][col]));
                 else
-                    g.setBackground(DEFAULTBACK);
+                    g.setBackground(colors.defaultHighlightColor());
 
                 g.clearRect(col * gridWidth, row * gridHeight, gridWidth,
                         gridHeight);
