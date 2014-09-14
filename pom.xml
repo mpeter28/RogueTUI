@@ -2,6 +2,22 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.antumbrastation.tui</groupId>
     <artifactId>astui</artifactId>
-    <name>AntumbraStation Textual User Interface</name>
     <version>0.1-SNAPSHOT</version>
+
+    <name>AntumbraStation Textual User Interface</name>
+    <description>A java textual user interface system which provides common, prebuilt ui elements</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
