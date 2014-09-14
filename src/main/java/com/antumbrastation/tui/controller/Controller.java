@@ -1,6 +1,7 @@
 package com.antumbrastation.tui.controller;
 
 import com.antumbrastation.tui.view.TextFrame;
+import com.antumbrastation.tui.view.TextPanel;
 
 import java.awt.event.*;
 import java.util.concurrent.BlockingQueue;
@@ -14,9 +15,6 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
     private int height;
     private int width;
 
-    private int padY;
-    private int padX;
-
     private int mouseRow;
     private int mouseColumn;
 
@@ -26,11 +24,8 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
         mouseRow = -1;
         mouseColumn = -1;
 
-        height = frame.getRowHeight();
-        width = frame.getRowWidth();
-
-        padY = 22;
-        padX = 4;
+        height = frame.getGridHeight();
+        width = frame.getGridWidth();
 
         queue = new LinkedBlockingQueue();
     }
@@ -81,9 +76,6 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
         int x = e.getX();
         int y = e.getY();
 
-        x -= padX;
-        y -= padY;
-
         x /= width;
         y /= height;
 
@@ -108,9 +100,6 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
     public void mouseMoved(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-
-        x -= padX;
-        y -= padY;
 
         x /= width;
         y /= height;

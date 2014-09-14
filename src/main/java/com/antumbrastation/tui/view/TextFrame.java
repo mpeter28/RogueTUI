@@ -4,12 +4,12 @@ import com.antumbrastation.tui.elements.ElementKeeper;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 public class TextFrame extends JFrame {
 
     private TextPanel panel;
-    private int columnWidth, rowHeight;
-
     private ElementKeeper root;
 
     public TextFrame(String title, ElementKeeper root, int rows, int columns, Font font, ColorPalette colors) {
@@ -17,21 +17,21 @@ public class TextFrame extends JFrame {
 
         this.root = root;
 
-        rowHeight = font.getSize();
-        columnWidth = rowHeight * 2 / 3;
-
-        panel = new TextPanel(colors, font, rows, columns, rowHeight, columnWidth);
+        panel = new TextPanel(colors, font, rows, columns);
+        this.setLayout(new GridLayout(1, 1));
+        this.add(panel);
+        this.pack();
 
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setResizable(false);
-        this.setLayout(new GridLayout(1, 1));
-        this.add(panel);
-
-        this.setSize(columns * columnWidth + 6, rows * rowHeight + 25);
     }
 
-    public void paint(Graphics g) {
-        super.paint(g);
+    public synchronized void addMouseListener(MouseListener l) {
+        panel.addMouseListener(l);
+    }
+
+    public synchronized void addMouseMotionListener(MouseMotionListener l) {
+        panel.addMouseMotionListener(l);
     }
 
     public void reDraw() {
@@ -39,11 +39,11 @@ public class TextFrame extends JFrame {
         repaint();
     }
 
-    public int getRowWidth() {
-        return columnWidth;
+    public int getGridWidth() {
+        return panel.getGridWidth();
     }
 
-    public int getRowHeight() {
-        return rowHeight;
+    public int getGridHeight() {
+        return panel.getGridHeight();
     }
 }

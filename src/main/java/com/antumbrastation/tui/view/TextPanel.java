@@ -12,14 +12,17 @@ public class TextPanel extends JPanel{
     private int gridWidth, gridHeight;
     private DisplayView view;
 
-    public TextPanel(ColorPalette colors, Font font, int rows, int columns, int gridHeight, int gridWidth) {
-        this.gridWidth = gridWidth;
-        this.gridHeight = gridHeight;
+    public TextPanel(ColorPalette colors, Font font, int rows, int columns) {
+        this.gridHeight = font.getSize();
+        this.gridWidth = gridHeight * 2 / 3;
         this.colors = colors;
         this.font = font;
         this.rows = rows;
         this.columns = columns;
+
         view = new DisplayView(rows, columns);
+
+        this.setPreferredSize(new Dimension(columns * gridWidth, rows * gridHeight));
     }
 
     public DisplayView view() {
