@@ -7,6 +7,10 @@
     <name>AntumbraStation Textual User Interface</name>
     <description>A java textual user interface system which provides common, prebuilt ui elements</description>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
