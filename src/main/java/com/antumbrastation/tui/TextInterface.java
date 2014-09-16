@@ -25,7 +25,7 @@ public class TextInterface {
         colorPalette = new ColorPalette();
     }
 
-    public void makeControllerAndView() {
+    public void makeControllerAndView(boolean keyListen, boolean mouseListen, boolean moveListen) {
         TextPanel view = new TextPanel(colorPalette, font, rows, columns);
         control = new Controller(view, elements);
 
@@ -40,9 +40,17 @@ public class TextInterface {
             frame.setIconImage(icon);
         }
 
-        frame.addKeyListener(control);
-        view.addMouseListener(control);
-        view.addMouseMotionListener(control);
+        if (keyListen) {
+            frame.addKeyListener(control);
+        }
+
+        if (mouseListen) {
+            view.addMouseListener(control);
+        }
+
+        if (moveListen) {
+            view.addMouseMotionListener(control);
+        }
     }
 
     public void runTask(InputTask task) {
