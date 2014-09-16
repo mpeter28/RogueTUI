@@ -2,7 +2,6 @@ package com.antumbrastation.tui.controller;
 
 import com.antumbrastation.tui.elements.DisplayElement;
 import com.antumbrastation.tui.elements.ElementKeeper;
-import com.antumbrastation.tui.view.TextFrame;
 import com.antumbrastation.tui.view.TextPanel;
 
 import java.awt.event.*;
@@ -11,7 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class Controller implements KeyListener, MouseListener, MouseMotionListener {
-    private TextFrame frame;
+    private TextPanel view;
     private BlockingQueue queue;
 
     private ElementKeeper elements;
@@ -22,15 +21,15 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
     private int mouseRow;
     private int mouseColumn;
 
-    public Controller(TextFrame frame, ElementKeeper elements) {
-        this.frame = frame;
+    public Controller(TextPanel view, ElementKeeper elements) {
+        this.view = view;
         this.elements = elements;
 
         mouseRow = -1;
         mouseColumn = -1;
 
-        height = frame.getGridHeight();
-        width = frame.getGridWidth();
+        height = view.getGridHeight();
+        width = view.getGridWidth();
 
         queue = new LinkedBlockingQueue();
     }
@@ -71,7 +70,8 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
                 }
 
                 if (redraw) {
-                    frame.reDraw();
+                    elements.displayComponents(view.getDisplayView());
+                    view.repaint();
                 }
 
                 if (task.isComplete()) {

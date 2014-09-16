@@ -10,7 +10,7 @@ public class TextPanel extends JPanel{
 
     private int rows, columns;
     private int gridWidth, gridHeight;
-    private DisplayView view;
+    private DisplayView displayView;
 
     public TextPanel(ColorPalette colors, Font font, int rows, int columns) {
         this.gridHeight = font.getSize();
@@ -20,13 +20,13 @@ public class TextPanel extends JPanel{
         this.rows = rows;
         this.columns = columns;
 
-        view = new DisplayView(rows, columns);
+        displayView = new DisplayView(rows, columns);
 
         this.setPreferredSize(new Dimension(columns * gridWidth, rows * gridHeight));
     }
 
-    public DisplayView view() {
-        return view;
+    public DisplayView getDisplayView() {
+        return displayView;
     }
 
     public void paint(Graphics graphics) {
@@ -37,9 +37,9 @@ public class TextPanel extends JPanel{
         g.setBackground(Color.BLACK);
         g.setFont(font);
 
-        char[][] text = view.getText();
-        int[][] textColor = view.getTextColor();
-        int[][] highlight = view.getHighlightColor();
+        char[][] text = displayView.getText();
+        int[][] textColor = displayView.getTextColor();
+        int[][] highlight = displayView.getHighlightColor();
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < columns; col++) {
