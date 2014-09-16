@@ -1,5 +1,7 @@
 package com.antumbrastation.tui.controller;
 
+import com.antumbrastation.tui.elements.DisplayElement;
+import com.antumbrastation.tui.elements.ElementKeeper;
 import com.antumbrastation.tui.view.TextFrame;
 import com.antumbrastation.tui.view.TextPanel;
 
@@ -12,14 +14,17 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
     private TextFrame frame;
     private BlockingQueue queue;
 
+    private ElementKeeper elements;
+
     private int height;
     private int width;
 
     private int mouseRow;
     private int mouseColumn;
 
-    public Controller(TextFrame frame) {
+    public Controller(TextFrame frame, ElementKeeper elements) {
         this.frame = frame;
+        this.elements = elements;
 
         mouseRow = -1;
         mouseColumn = -1;
@@ -43,10 +48,26 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
                     redraw = task.processKeyHit((Character) input);
                 } else if (input instanceof MouseClick) {
                     MouseClick m = (MouseClick) input;
-                    redraw = task.processMouseClick(m.row, m.column, m.button);
+
+                    int row = m.row;
+                    int column = m.column;
+                    DisplayElement element = elements.mouseOnElement(row, column);
+                    if (element != null) {
+                        row -= element.getWindow().getCornerRow();
+                        column -= element.getWindow().getCornerColumn();
+                        redraw = task.processMouseClick(row, column, m.button, element);
+                    }
                 } else if (input instanceof MouseMove) {
                     MouseMove m = (MouseMove) input;
-                    redraw = task.processMouseMove(m.row, m.column);
+
+                    int row = m.row;
+                    int column = m.column;
+                    DisplayElement element = elements.mouseOnElement(row, column);
+                    if (element != null) {
+                        row -= element.getWindow().getCornerRow();
+                        column -= element.getWindow().getCornerColumn();
+                        redraw = task.processMouseMove(row, column, element);
+                    }
                 }
 
                 if (redraw) {

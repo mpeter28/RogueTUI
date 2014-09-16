@@ -52,6 +52,10 @@ public class TickerTextElement implements DisplayElement {
             view.writeLine("-- More --", window.getHeight() - 1, window.getWidth() - 11, -1, -1);
     }
 
+    public Window getWindow() {
+        return window;
+    }
+
     public void addMessage(String message, int color) {
         String[] split = message.split(" ");
 

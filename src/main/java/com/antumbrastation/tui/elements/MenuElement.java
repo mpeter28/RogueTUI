@@ -51,6 +51,10 @@ public class MenuElement implements DisplayElement {
         }
     }
 
+    public Window getWindow() {
+        return window;
+    }
+
     public String[] select() {
         String[] result = new String[2];
 

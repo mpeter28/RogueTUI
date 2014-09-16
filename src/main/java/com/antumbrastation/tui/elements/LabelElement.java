@@ -20,6 +20,10 @@ public class LabelElement implements DisplayElement {
         view.writeLine(text, 0, 0, color, highlight);
     }
 
+    public Window getWindow() {
+        return window;
+    }
+
     public void setText(String text) {
         this.text = text;
     }

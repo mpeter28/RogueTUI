@@ -48,4 +48,9 @@ public class ScrollTextElement implements DisplayElement {
             }
         }
     }
+
+    public Window getWindow() {
+        return window;
+    }
+
 }

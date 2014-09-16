@@ -22,6 +22,16 @@ public class ElementKeeper {
         }
     }
 
+    public DisplayElement mouseOnElement(int row, int column) {
+        for (DisplayElement element: visible) {
+            if (element.getWindow().inWindowAbsolute(row, column)) {
+                return element;
+            }
+        }
+
+        return null;
+    }
+
     public void makeFirstInZOrder(String name) {
         DisplayElement component = names.get(name);
         visible.remove(component);

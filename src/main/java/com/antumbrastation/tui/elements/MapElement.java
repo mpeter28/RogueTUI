@@ -38,4 +38,9 @@ public class MapElement implements DisplayElement {
             for (int j = 0; j < width; j++)
                 view.writeChar(text[i][j], i, j, textColor[i][j], highlight[i][j]);
     }
+
+    public Window getWindow() {
+        return window;
+    }
+
 }

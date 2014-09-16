@@ -53,4 +53,9 @@ public class FrameElement implements DisplayElement {
                 view.writeChar('|', line.y + j, line.x, lineColor, 0);
         }
     }
+
+    public Window getWindow() {
+        return window;
+    }
+
 }

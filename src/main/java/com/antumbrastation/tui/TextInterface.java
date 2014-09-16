@@ -13,7 +13,7 @@ public class TextInterface {
 
     public TextInterface(String title, ElementKeeper root, int rows, int columns, Font font, ColorPalette colors) {
         view = new TextFrame(title, root, rows, columns, font, colors);
-        control = new Controller(view);
+        control = new Controller(view, root);
 
         view.addKeyListener(control);
         view.addMouseListener(control);
