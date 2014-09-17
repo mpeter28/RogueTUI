@@ -13,11 +13,19 @@ public class TickerTextElement implements DisplayElement {
     private Window window;
     private int nextWord;
 
+    private String moreMessage;
+    private int moreMessageColor;
+    private int moreMessageHighlight;
+
     public TickerTextElement(Window window) {
         this.window = window;
 
         pageWords = new ArrayList<String>();
         pageColors = new ArrayList<Integer>();
+
+        moreMessage = "-- More --";
+        moreMessageColor = -1;
+        moreMessageHighlight = -1;
     }
 
     public void display(DisplayView view) {
@@ -48,12 +56,20 @@ public class TickerTextElement implements DisplayElement {
             nextWord++;
         }
 
-        if (nextWord < pageWords.size())
-            view.writeLine("-- More --", window.getHeight() - 1, window.getWidth() - 11, -1, -1);
+        if (hasMore()) {
+            view.writeLine(moreMessage, window.getHeight() - 1,
+                    window.getWidth() - moreMessage.length(), moreMessageColor, moreMessageHighlight);
+        }
     }
 
     public Window getWindow() {
         return window;
+    }
+
+    public void setMoreMessage(String message, int color, int highlight) {
+        moreMessage = message;
+        moreMessageColor = color;
+        moreMessageHighlight = highlight;
     }
 
     public void addMessage(String message, int color) {
@@ -65,13 +81,17 @@ public class TickerTextElement implements DisplayElement {
         }
     }
 
-    public void clean() {
+    public void clear() {
         nextWord = 0;
         pageColors.clear();
         pageWords.clear();
     }
 
-    public boolean cleanPage() {
+    public boolean hasMore() {
+        return (nextWord < pageWords.size());
+    }
+
+    public boolean nextPage() {
         if (pageWords.size() <= nextWord)
             return false;
 

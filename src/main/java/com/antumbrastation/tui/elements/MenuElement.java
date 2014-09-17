@@ -7,18 +7,20 @@ public class MenuElement implements DisplayElement {
 
     private Window window;
 
-    private int color;
+    private int dividerColor;
+    private char dividerChar;
+
     private String[] keys;
     private String[] options;
     private int[] keyColors, optionColors;
+
     private int currentOption, topOption, bottomOption;
 
     public MenuElement(Window window) {
         this.window = window;
     }
 
-    public void setPage(int color, String[] keys, String[] options, int[] keyColors, int[] optionColors) {
-        this.color = color;
+    public void setMeunOptions(String[] keys, String[] options, int[] keyColors, int[] optionColors) {
         this.keys = keys;
         this.options = options;
         this.keyColors = keyColors;
@@ -27,6 +29,11 @@ public class MenuElement implements DisplayElement {
         currentOption = 0;
         topOption = 0;
         bottomOption = Math.min(keys.length, window.getHeight());
+    }
+
+    public void setDivider(char dividerChar, int dividerColor) {
+        this.dividerChar = dividerChar;
+        this.dividerColor = dividerColor;
     }
 
     public void display(DisplayView view) {
@@ -45,7 +52,7 @@ public class MenuElement implements DisplayElement {
                 view.writeLine(keys[i], index, 0, -1, keyColors[i]);
             else
                 view.writeLine(keys[i], index, 0, keyColors[i], -1);
-            view.writeChar('|', index, keySize, color, -1);
+            view.writeChar(dividerChar, index, keySize, dividerColor, -1);
             view.writeLine(options[i], index, keySize + 2, optionColors[i], -1);
             index++;
         }
@@ -55,13 +62,20 @@ public class MenuElement implements DisplayElement {
         return window;
     }
 
-    public String[] select() {
+    public String[] currentSelection() {
         String[] result = new String[2];
 
         result[0] = keys[currentOption];
         result[1] = options[currentOption];
 
         return result;
+    }
+
+    public void jumpToOption(int row) {
+        row += topOption;
+        if (row < bottomOption) {
+            currentOption = row;
+        }
     }
 
     public void scrollUp() {

@@ -34,6 +34,14 @@ public class ScrollTextElement implements DisplayElement {
         highlights[0] = highlight;
     }
 
+    public void clearLines() {
+        for (int i = 0; i < lines.length; i++) {
+            lines[i] = "";
+            colors[i] = -1;
+            highlights[i] = -1;
+        }
+    }
+
     public void display(DisplayView view) {
         view.setWindow(window);
         view.writeFill(' ', -1, -1);
