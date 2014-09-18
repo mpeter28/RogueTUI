@@ -35,7 +35,10 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
     }
 
     public void runTask(InputTask task) {
-        task.initialize();
+        if (task.initialize()) {
+            elements.displayComponents(view.getDisplayView());
+            view.repaint();
+        }
 
         boolean done = false;
         while (!done) {
