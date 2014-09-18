@@ -12,9 +12,13 @@ public class TextPanel extends JPanel{
     private int gridWidth, gridHeight;
     private DisplayView displayView;
 
-    public TextPanel(ColorPalette colors, Font font, int rows, int columns) {
-        this.gridHeight = font.getSize();
-        this.gridWidth = gridHeight * 2 / 3;
+    private FontSpacingHints fontHints;
+
+    public TextPanel(ColorPalette colors, Font font, FontSpacingHints fontHints, int rows, int columns) {
+        this.fontHints = fontHints;
+
+        this.gridHeight = fontHints.getGridHeight();
+        this.gridWidth = fontHints.getGridWidth();
         this.colors = colors;
         this.font = font;
         this.rows = rows;
@@ -33,8 +37,6 @@ public class TextPanel extends JPanel{
         Graphics2D g = (Graphics2D) graphics;
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
-
-        g.setBackground(Color.BLACK);
         g.setFont(font);
 
         char[][] text = displayView.getText();
@@ -56,9 +58,12 @@ public class TextPanel extends JPanel{
                 g.clearRect(col * gridWidth, row * gridHeight, gridWidth,
                         gridHeight);
 
-                if (text[row][col] != 0)
-                    g.drawChars(text[row], col, 1, col * gridWidth,
-                            (row + 1) * gridHeight - (int) (gridHeight / 4));
+                if (text[row][col] != 0) {
+                    char c = text[row][col];
+
+                    g.drawChars(text[row], col, 1, col * gridWidth + fontHints.getCharLeftMargin(c),
+                            (row + 1) * gridHeight - fontHints.getCharDescentMargin(c));
+                }
             }
         }
     }
