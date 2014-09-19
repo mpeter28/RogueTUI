@@ -2,6 +2,7 @@ package com.antumbrastation.tui.view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.font.GlyphVector;
 
 public class TextPanel extends JPanel{
 
@@ -12,13 +13,9 @@ public class TextPanel extends JPanel{
     private int gridWidth, gridHeight;
     private DisplayView displayView;
 
-    private FontSpacingHints fontHints;
-
-    public TextPanel(ColorPalette colors, Font font, FontSpacingHints fontHints, int rows, int columns) {
-        this.fontHints = fontHints;
-
-        this.gridHeight = fontHints.getGridHeight();
-        this.gridWidth = fontHints.getGridWidth();
+    public TextPanel(ColorPalette colors, Font font, int rows, int columns) {
+        this.gridHeight = font.getSize() + 2;
+        this.gridWidth = gridHeight * 2 / 3;
         this.colors = colors;
         this.font = font;
         this.rows = rows;
@@ -42,6 +39,7 @@ public class TextPanel extends JPanel{
         char[][] text = displayView.getText();
         int[][] textColor = displayView.getTextColor();
         int[][] highlight = displayView.getHighlightColor();
+        char[] glyph = new char[1];
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < columns; col++) {
@@ -59,10 +57,16 @@ public class TextPanel extends JPanel{
                         gridHeight);
 
                 if (text[row][col] != 0) {
-                    char c = text[row][col];
+                    glyph[0] = text[row][col];
 
-                    g.drawChars(text[row], col, 1, col * gridWidth + fontHints.getCharLeftMargin(c),
-                            (row + 1) * gridHeight - fontHints.getCharDescentMargin(c));
+                    GlyphVector v = font.createGlyphVector(g.getFontRenderContext(), glyph);
+
+                    float descent = (float) v.getVisualBounds().getMaxY();
+                    if (descent < 0) {
+                        descent = 0;
+                    }
+
+                    g.drawGlyphVector(v, col * gridWidth, (row + 1) * gridHeight - descent - 1);
                 }
             }
         }

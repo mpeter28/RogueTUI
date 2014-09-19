@@ -3,7 +3,6 @@ package com.antumbrastation.tui;
 import com.antumbrastation.tui.elements.ElementKeeper;
 import com.antumbrastation.tui.controller.*;
 import com.antumbrastation.tui.view.ColorPalette;
-import com.antumbrastation.tui.view.FontSpacingHints;
 import com.antumbrastation.tui.view.TextPanel;
 
 import javax.swing.*;
@@ -18,18 +17,16 @@ public class TextInterface {
 
     private ElementKeeper elements;
     private Font font;
-    private FontSpacingHints fontHints;
     private ColorPalette colorPalette;
     private Image icon;
 
     public TextInterface() {
         font = new Font(Font.MONOSPACED, Font.BOLD, 18);
-        fontHints = new FontSpacingHints(20,14,4,1);
         colorPalette = new ColorPalette();
     }
 
     public void makeControllerAndView(boolean keyListen, boolean mouseListen, boolean moveListen) {
-        TextPanel view = new TextPanel(colorPalette, font, fontHints, rows, columns);
+        TextPanel view = new TextPanel(colorPalette, font, rows, columns);
         control = new Controller(view, elements);
 
         frame = new JFrame(title);
@@ -71,10 +68,6 @@ public class TextInterface {
 
     public void setFont(Font font) {
         this.font = font;
-    }
-
-    public void setFontHints(FontSpacingHints fontHints) {
-        this.fontHints = fontHints;
     }
 
     public void setSize(int rows, int columns) {
