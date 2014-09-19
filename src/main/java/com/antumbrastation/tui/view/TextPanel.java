@@ -23,6 +23,7 @@ public class TextPanel extends JPanel{
 
         displayView = new DisplayView(rows, columns);
 
+        this.setBackground(colors.defaultHighlightColor());
         this.setPreferredSize(new Dimension(columns * gridWidth, rows * gridHeight));
     }
 
