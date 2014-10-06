@@ -119,7 +119,7 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
         if (mouseRow != y || mouseColumn != x) {
             mouseRow = y;
             mouseColumn = x;
-            queue.add(new MouseInput(y, x, 0));
+            queue.add(new MouseInput(y, x, MouseEvent.NOBUTTON));
         }
     }
 
