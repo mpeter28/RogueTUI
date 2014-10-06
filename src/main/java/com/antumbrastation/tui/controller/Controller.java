@@ -91,7 +91,7 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
         x /= width;
         y /= height;
 
-        queue.add(new MouseClick(y, x, e.getButton()));
+        queue.add(new MouseInput(y, x, e.getButton()));
     }
 
     public void mousePressed(MouseEvent e) {
@@ -119,7 +119,7 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
         if (mouseRow != y || mouseColumn != x) {
             mouseRow = y;
             mouseColumn = x;
-            queue.add(new MouseMove(y, x));
+            queue.add(new MouseInput(y, x, 0));
         }
     }
 
@@ -139,12 +139,12 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
         }
     }
 
-    private class MouseClick implements QueuedInput {
+    private class MouseInput implements QueuedInput {
         private int row;
         private int column;
         private int button;
 
-        private MouseClick(int row, int column, int button) {
+        private MouseInput(int row, int column, int button) {
             this.row = row;
             this.column = column;
             this.button = button;
@@ -155,27 +155,11 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
             if (element != null) {
                 row -= element.getWindow().getCornerRow();
                 column -= element.getWindow().getCornerColumn();
-                return task.processMouseClick(row, column, button, element);
-            }
-            return false;
-        }
-    }
-
-    private class MouseMove implements QueuedInput {
-        private int row;
-        private int column;
-
-        private MouseMove(int row, int column) {
-            this.row = row;
-            this.column = column;
-        }
-
-        public boolean process(InputTask task) {
-            DisplayElement element = elements.mouseOnElement(row, column);
-            if (element != null) {
-                row -= element.getWindow().getCornerRow();
-                column -= element.getWindow().getCornerColumn();
-                return task.processMouseMove(row, column, element);
+                if (button != MouseEvent.NOBUTTON) {
+                    return task.processMouseClick(row, column, button, element);
+                } else {
+                    return task.processMouseMove(row, column, element);
+                }
             }
             return false;
         }
