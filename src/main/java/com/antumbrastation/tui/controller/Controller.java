@@ -5,6 +5,8 @@ import com.antumbrastation.tui.elements.ElementKeeper;
 import com.antumbrastation.tui.view.TextPanel;
 
 import java.awt.event.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +23,8 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
     private int mouseRow;
     private int mouseColumn;
 
+    private Set<String> specialKeys;
+
     public Controller(TextPanel view, ElementKeeper elements) {
         this.view = view;
         this.elements = elements;
@@ -32,6 +36,8 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
         width = view.getGridWidth();
 
         queue = new LinkedBlockingQueue();
+
+        specialKeys = new HashSet<>();
     }
 
     public void runTask(InputTask task) {
@@ -47,7 +53,7 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
 
                 boolean redraw = false;
                 if (input instanceof Character) {
-                    redraw = task.processKeyHit((Character) input);
+                    redraw = task.processKeyHit((Character) input, specialKeys);
                 } else if (input instanceof MouseClick) {
                     MouseClick m = (MouseClick) input;
 
@@ -70,6 +76,11 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
                         column -= element.getWindow().getCornerColumn();
                         redraw = task.processMouseMove(row, column, element);
                     }
+                } else if (input instanceof KeyDown) {
+                    specialKeys.add(((KeyDown) input).key);
+                } else if (input instanceof KeyRelease) {
+                    specialKeys.remove(((KeyRelease) input).key);
+                    task.processKeyHit(((KeyRelease) input).key, specialKeys);
                 }
 
                 if (redraw) {
@@ -91,9 +102,19 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
     }
 
     public void keyPressed(KeyEvent e) {
+        if (!Character.isDefined(e.getKeyChar())) {
+            KeyDown k = new KeyDown();
+            k.key = KeyEvent.getKeyText(e.getKeyCode());
+            queue.add(k);
+        }
     }
 
     public void keyReleased(KeyEvent e) {
+        if (!Character.isDefined(e.getKeyChar())) {
+            KeyRelease k = new KeyRelease();
+            k.key = KeyEvent.getKeyText(e.getKeyCode());
+            queue.add(k);
+        }
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -155,5 +176,13 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
             this.row = row;
             this.column = column;
         }
+    }
+
+    private class KeyDown {
+        String key;
+    }
+
+    private class KeyRelease {
+        String key;
     }
 }
