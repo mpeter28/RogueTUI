@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Controller implements KeyListener, MouseListener, MouseMotionListener {
     private TextPanel view;
-    private BlockingQueue queue;
+    private BlockingQueue<QueuedInput> queue;
 
     private ElementKeeper elements;
 
@@ -35,9 +35,9 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
         height = view.getGridHeight();
         width = view.getGridWidth();
 
-        queue = new LinkedBlockingQueue();
+        queue = new LinkedBlockingQueue<QueuedInput>();
 
-        specialKeys = new HashSet<>();
+        specialKeys = new HashSet<String>();
     }
 
     public void runTask(InputTask task) {
@@ -49,47 +49,18 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
         boolean done = false;
         while (!done) {
             try {
-                Object input = queue.poll(1000, TimeUnit.MILLISECONDS);
+                QueuedInput queuedInput = queue.poll(1000, TimeUnit.MILLISECONDS);
 
-                boolean redraw = false;
-                if (input instanceof Character) {
-                    redraw = task.processKeyHit((Character) input, specialKeys);
-                } else if (input instanceof MouseClick) {
-                    MouseClick m = (MouseClick) input;
-
-                    int row = m.row;
-                    int column = m.column;
-                    DisplayElement element = elements.mouseOnElement(row, column);
-                    if (element != null) {
-                        row -= element.getWindow().getCornerRow();
-                        column -= element.getWindow().getCornerColumn();
-                        redraw = task.processMouseClick(row, column, m.button, element);
+                if (queuedInput != null) {
+                    boolean redraw = queuedInput.process(task);
+                    if (redraw) {
+                        elements.displayComponents(view.getDisplayView());
+                        view.repaint();
                     }
-                } else if (input instanceof MouseMove) {
-                    MouseMove m = (MouseMove) input;
 
-                    int row = m.row;
-                    int column = m.column;
-                    DisplayElement element = elements.mouseOnElement(row, column);
-                    if (element != null) {
-                        row -= element.getWindow().getCornerRow();
-                        column -= element.getWindow().getCornerColumn();
-                        redraw = task.processMouseMove(row, column, element);
+                    if (task.isComplete()) {
+                        done = true;
                     }
-                } else if (input instanceof KeyDown) {
-                    specialKeys.add(((KeyDown) input).key);
-                } else if (input instanceof KeyRelease) {
-                    specialKeys.remove(((KeyRelease) input).key);
-                    task.processKeyHit(((KeyRelease) input).key, specialKeys);
-                }
-
-                if (redraw) {
-                    elements.displayComponents(view.getDisplayView());
-                    view.repaint();
-                }
-
-                if (task.isComplete()) {
-                    done = true;
                 }
             } catch (InterruptedException e) {
                 //Not an issue
@@ -98,22 +69,18 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
     }
 
     public void keyTyped(KeyEvent e) {
-        queue.add(e.getKeyChar());
+        queue.add(new TypedCharacter(e.getKeyChar()));
     }
 
     public void keyPressed(KeyEvent e) {
         if (!Character.isDefined(e.getKeyChar())) {
-            KeyDown k = new KeyDown();
-            k.key = KeyEvent.getKeyText(e.getKeyCode());
-            queue.add(k);
+            queue.add(new SpecialKey(KeyEvent.getKeyText(e.getKeyCode()), true));
         }
     }
 
     public void keyReleased(KeyEvent e) {
         if (!Character.isDefined(e.getKeyChar())) {
-            KeyRelease k = new KeyRelease();
-            k.key = KeyEvent.getKeyText(e.getKeyCode());
-            queue.add(k);
+            queue.add(new SpecialKey(KeyEvent.getKeyText(e.getKeyCode()), false));
         }
     }
 
@@ -156,33 +123,82 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
         }
     }
 
-    private class MouseClick {
-        int row;
-        int column;
-        int button;
+    private interface QueuedInput {
+        public boolean process(InputTask task);
+    }
 
-        public MouseClick(int row, int column, int button) {
+    private class TypedCharacter implements QueuedInput {
+        private char c;
+
+        private TypedCharacter(char c) {
+            this.c = c;
+        }
+
+        public boolean process(InputTask task) {
+            return task.processKeyHit(c, specialKeys);
+        }
+    }
+
+    private class MouseClick implements QueuedInput {
+        private int row;
+        private int column;
+        private int button;
+
+        private MouseClick(int row, int column, int button) {
             this.row = row;
             this.column = column;
             this.button = button;
         }
-    }
 
-    private class MouseMove {
-        int row;
-        int column;
-
-        public MouseMove(int row, int column) {
-            this.row = row;
-            this.column = column;
+        public boolean process(InputTask task) {
+            DisplayElement element = elements.mouseOnElement(row, column);
+            if (element != null) {
+                row -= element.getWindow().getCornerRow();
+                column -= element.getWindow().getCornerColumn();
+                return task.processMouseClick(row, column, button, element);
+            }
+            return false;
         }
     }
 
-    private class KeyDown {
-        String key;
+    private class MouseMove implements QueuedInput {
+        private int row;
+        private int column;
+
+        private MouseMove(int row, int column) {
+            this.row = row;
+            this.column = column;
+        }
+
+        public boolean process(InputTask task) {
+            DisplayElement element = elements.mouseOnElement(row, column);
+            if (element != null) {
+                row -= element.getWindow().getCornerRow();
+                column -= element.getWindow().getCornerColumn();
+                return task.processMouseMove(row, column, element);
+            }
+            return false;
+        }
     }
 
-    private class KeyRelease {
-        String key;
+    private class SpecialKey implements QueuedInput {
+        private String specialKey;
+        private boolean pressNotRelease;
+
+        private SpecialKey(String specialKey, boolean pressNotRelease) {
+            this.specialKey = specialKey;
+            this.pressNotRelease = pressNotRelease;
+        }
+
+        public boolean process(InputTask task) {
+            if (pressNotRelease) {
+                specialKeys.add(specialKey);
+                return false;
+            } else {
+                specialKeys.remove(specialKey);
+                return task.processKeyHit(specialKey, specialKeys);
+            }
+        }
     }
+
 }
