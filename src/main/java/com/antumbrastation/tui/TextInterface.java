@@ -1,9 +1,12 @@
 package com.antumbrastation.tui;
 
-import com.antumbrastation.tui.elements.ElementKeeper;
+import com.antumbrastation.tui.elements.DisplayElement;
 import com.antumbrastation.tui.controller.*;
 import com.antumbrastation.tui.view.ColorPalette;
 import com.antumbrastation.tui.view.TextPanel;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +17,7 @@ public class TextInterface {
     private String title;
     private int rows, columns;
 
-    private ElementKeeper elements;
+    private List<DisplayElement> elements;
     private Font font;
     private ColorPalette colorPalette;
     private Image icon;
@@ -22,6 +25,7 @@ public class TextInterface {
     public TextInterface() {
         font = new Font(Font.MONOSPACED, Font.BOLD, 18);
         colorPalette = new ColorPalette();
+        elements = new LinkedList<>();
     }
 
     public void makeControllerAndView(boolean keyListen, boolean mouseListen, boolean moveListen) {
@@ -61,7 +65,7 @@ public class TextInterface {
         this.title = title;
     }
 
-    public void setElementKeeper(ElementKeeper elements) {
+    public void setElementKeeper(List<DisplayElement> elements) {
         this.elements = elements;
     }
 

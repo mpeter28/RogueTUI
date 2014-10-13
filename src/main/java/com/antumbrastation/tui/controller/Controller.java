@@ -1,11 +1,11 @@
 package com.antumbrastation.tui.controller;
 
 import com.antumbrastation.tui.elements.DisplayElement;
-import com.antumbrastation.tui.elements.ElementKeeper;
 import com.antumbrastation.tui.view.TextPanel;
 
 import java.awt.event.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -15,7 +15,7 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
     private TextPanel view;
     private BlockingQueue<QueuedInput> queue;
 
-    private ElementKeeper elements;
+    private List<DisplayElement> elements;
 
     private int height;
     private int width;
@@ -25,7 +25,7 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
 
     private Set<String> specialKeys;
 
-    public Controller(TextPanel view, ElementKeeper elements) {
+    public Controller(TextPanel view, List<DisplayElement> elements) {
         this.view = view;
         this.elements = elements;
 
@@ -42,7 +42,9 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
 
     public void runTask(InputTask task) {
         if (task.initialize()) {
-            elements.displayComponents(view.getDisplayView());
+            for (DisplayElement element: elements) {
+                element.display(view.getDisplayView());
+            }
             view.repaint();
         }
 
@@ -54,7 +56,9 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
                 if (queuedInput != null) {
                     boolean redraw = queuedInput.process(task);
                     if (redraw) {
-                        elements.displayComponents(view.getDisplayView());
+                        for (DisplayElement element: elements) {
+                            element.display(view.getDisplayView());
+                        }
                         view.repaint();
                     }
 
@@ -151,7 +155,15 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
         }
 
         public boolean process(InputTask task) {
-            DisplayElement element = elements.mouseOnElement(row, column);
+            DisplayElement element = null;
+
+            for (DisplayElement e: elements) {
+                if (e.getWindow().inWindowAbsolute(row, column)) {
+                    element = e;
+                    break;
+                }
+            }
+
             if (element != null) {
                 row -= element.getWindow().getCornerRow();
                 column -= element.getWindow().getCornerColumn();
