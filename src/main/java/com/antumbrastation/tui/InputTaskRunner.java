@@ -57,7 +57,7 @@ public class InputTaskRunner implements KeyListener, MouseListener, MouseMotionL
     }
 
     public void keyTyped(KeyEvent e) {
-        if (startBarrier.get() && !Character.isDefined(e.getKeyChar())) {
+        if (startBarrier.get()) {
             task.processKeyHit(e.getKeyChar(), specialKeys);
             finishedTaskCheck();
         }
@@ -70,11 +70,13 @@ public class InputTaskRunner implements KeyListener, MouseListener, MouseMotionL
     }
 
     public void keyReleased(KeyEvent e) {
-        if (startBarrier.get() && !Character.isDefined(e.getKeyChar())) {
+        if (!Character.isDefined(e.getKeyChar())) {
             String keyText = KeyEvent.getKeyText(e.getKeyCode());
-            task.processKeyHit(keyText, specialKeys);
             specialKeys.remove(keyText);
-            finishedTaskCheck();
+            if (startBarrier.get()) {
+                task.processKeyHit(keyText, specialKeys);
+                finishedTaskCheck();
+            }
         }
     }
 
