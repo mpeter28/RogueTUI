@@ -1,4 +1,4 @@
-package com.antumbrastation.tui.controller;
+package com.antumbrastation.tui;
 
 import com.antumbrastation.tui.elements.DisplayElement;
 

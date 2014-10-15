@@ -1,4 +1,7 @@
-package com.antumbrastation.tui.view;
+package com.antumbrastation.tui;
+
+import com.antumbrastation.tui.ColorPalette;
+import com.antumbrastation.tui.DisplayView;
 
 import javax.swing.*;
 import java.awt.*;

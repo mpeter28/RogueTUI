@@ -1,13 +1,14 @@
-package com.antumbrastation.tui.controller;
+package com.antumbrastation.tui;
 
-import com.antumbrastation.tui.view.TextPanel;
+import com.antumbrastation.tui.InputTask;
+import com.antumbrastation.tui.TextPanel;
 
 import java.awt.event.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
-public class Controller implements KeyListener, MouseListener, MouseMotionListener {
+public class InputTaskRunner implements KeyListener, MouseListener, MouseMotionListener {
     private InputTask task;
     private CountDownLatch finishedBarrier;
 
@@ -19,7 +20,7 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
 
     private Set<String> specialKeys;
 
-    public Controller(TextPanel view) {
+    public InputTaskRunner(TextPanel view) {
         mouseRow = -1;
         mouseColumn = -1;
 

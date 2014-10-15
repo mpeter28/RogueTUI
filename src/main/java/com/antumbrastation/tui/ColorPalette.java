@@ -1,4 +1,4 @@
-package com.antumbrastation.tui.view;
+package com.antumbrastation.tui;
 
 import java.awt.*;
 
