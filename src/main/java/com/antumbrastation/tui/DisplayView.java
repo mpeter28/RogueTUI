@@ -6,7 +6,7 @@ public class DisplayView {
     private int[][] highlightColor;
     private char[][] text;
 
-    private Window window;
+    private DisplayBounds window;
 
     private int columns, rows;
 
@@ -31,7 +31,7 @@ public class DisplayView {
         return text;
     }
 
-    public void setWindow(Window window) {
+    public void setBounds(DisplayBounds window) {
         this.window = window;
     }
 

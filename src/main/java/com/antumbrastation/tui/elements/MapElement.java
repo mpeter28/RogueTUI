@@ -1,17 +1,17 @@
 package com.antumbrastation.tui.elements;
 
+import com.antumbrastation.tui.DisplayBounds;
 import com.antumbrastation.tui.DisplayView;
-import com.antumbrastation.tui.Window;
 
 public class MapElement implements DisplayElement {
 
-    private Window window;
+    private DisplayBounds window;
 
     private char[][] text;
     private int[][] highlight;
     private int[][] textColor;
 
-    public MapElement(Window window) {
+    public MapElement(DisplayBounds window) {
         this.window = window;
 
         int rows = window.getHeight();
@@ -29,7 +29,7 @@ public class MapElement implements DisplayElement {
     }
 
     public void display(DisplayView view) {
-        view.setWindow(window);
+        view.setBounds(window);
 
         int width = window.getWidth();
         int height = window.getHeight();
@@ -39,7 +39,7 @@ public class MapElement implements DisplayElement {
                 view.writeChar(text[i][j], i, j, textColor[i][j], highlight[i][j]);
     }
 
-    public Window getWindow() {
+    public DisplayBounds getDisplayBounds() {
         return window;
     }
 

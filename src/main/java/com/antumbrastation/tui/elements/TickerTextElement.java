@@ -1,7 +1,7 @@
 package com.antumbrastation.tui.elements;
 
+import com.antumbrastation.tui.DisplayBounds;
 import com.antumbrastation.tui.DisplayView;
-import com.antumbrastation.tui.Window;
 
 import java.util.ArrayList;
 
@@ -10,14 +10,14 @@ public class TickerTextElement implements DisplayElement {
     private ArrayList<String> pageWords;
     private ArrayList<Integer> pageColors;
 
-    private Window window;
+    private DisplayBounds window;
     private int nextWord;
 
     private String moreMessage;
     private int moreMessageColor;
     private int moreMessageHighlight;
 
-    public TickerTextElement(Window window) {
+    public TickerTextElement(DisplayBounds window) {
         this.window = window;
 
         pageWords = new ArrayList<String>();
@@ -29,7 +29,7 @@ public class TickerTextElement implements DisplayElement {
     }
 
     public void display(DisplayView view) {
-        view.setWindow(window);
+        view.setBounds(window);
         view.writeFill(' ', -1, -1);
 
         int row = 0;
@@ -62,7 +62,7 @@ public class TickerTextElement implements DisplayElement {
         }
     }
 
-    public Window getWindow() {
+    public DisplayBounds getDisplayBounds() {
         return window;
     }
 

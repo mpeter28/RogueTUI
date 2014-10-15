@@ -1,26 +1,26 @@
 package com.antumbrastation.tui.elements;
 
+import com.antumbrastation.tui.DisplayBounds;
 import com.antumbrastation.tui.DisplayView;
-import com.antumbrastation.tui.Window;
 
 public class LabelElement implements DisplayElement {
 
-    private Window window;
+    private DisplayBounds window;
     private String text;
     private int color;
     private int highlight;
 
-    public LabelElement(Window window) {
+    public LabelElement(DisplayBounds window) {
         this.window = window;
     }
 
     public void display(DisplayView view) {
-        view.setWindow(window);
+        view.setBounds(window);
 
         view.writeLine(text, 0, 0, color, highlight);
     }
 
-    public Window getWindow() {
+    public DisplayBounds getDisplayBounds() {
         return window;
     }
 

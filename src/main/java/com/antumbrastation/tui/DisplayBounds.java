@@ -1,17 +1,17 @@
 package com.antumbrastation.tui;
 
-public class Window {
+public class DisplayBounds {
     private int cornerRow, cornerColumn;
     private int height, width;
 
-    public Window (int height, int width) {
+    public DisplayBounds(int height, int width) {
         this.cornerRow = 0;
         this.cornerColumn = 0;
         this.height = height;
         this.width = width;
     }
 
-    public Window(int cornerRow, int cornerColumn, int height, int width) {
+    public DisplayBounds(int cornerRow, int cornerColumn, int height, int width) {
         this.cornerRow = cornerRow;
         this.cornerColumn = cornerColumn;
         this.height = height;

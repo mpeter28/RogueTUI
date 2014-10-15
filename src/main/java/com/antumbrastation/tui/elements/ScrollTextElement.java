@@ -1,18 +1,18 @@
 package com.antumbrastation.tui.elements;
 
+import com.antumbrastation.tui.DisplayBounds;
 import com.antumbrastation.tui.DisplayView;
-import com.antumbrastation.tui.Window;
 
 public class ScrollTextElement implements DisplayElement {
 
-    private Window window;
+    private DisplayBounds window;
     private String[] lines;
     private int[] colors;
     private int[] highlights;
 
     private boolean bottomToTop;
 
-    public ScrollTextElement(boolean bottomToTop, Window window) {
+    public ScrollTextElement(boolean bottomToTop, DisplayBounds window) {
         this.window = window;
         this.bottomToTop = bottomToTop;
 
@@ -43,7 +43,7 @@ public class ScrollTextElement implements DisplayElement {
     }
 
     public void display(DisplayView view) {
-        view.setWindow(window);
+        view.setBounds(window);
         view.writeFill(' ', -1, -1);
 
         if (bottomToTop) {
@@ -57,7 +57,7 @@ public class ScrollTextElement implements DisplayElement {
         }
     }
 
-    public Window getWindow() {
+    public DisplayBounds getDisplayBounds() {
         return window;
     }
 

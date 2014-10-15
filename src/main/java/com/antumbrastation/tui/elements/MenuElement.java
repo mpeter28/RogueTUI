@@ -1,11 +1,11 @@
 package com.antumbrastation.tui.elements;
 
+import com.antumbrastation.tui.DisplayBounds;
 import com.antumbrastation.tui.DisplayView;
-import com.antumbrastation.tui.Window;
 
 public class MenuElement implements DisplayElement {
 
-    private Window window;
+    private DisplayBounds window;
 
     private int dividerColor;
     private char dividerChar;
@@ -16,7 +16,7 @@ public class MenuElement implements DisplayElement {
 
     private int currentOption, topOption, bottomOption;
 
-    public MenuElement(Window window) {
+    public MenuElement(DisplayBounds window) {
         this.window = window;
     }
 
@@ -37,7 +37,7 @@ public class MenuElement implements DisplayElement {
     }
 
     public void display(DisplayView view) {
-        view.setWindow(window);
+        view.setBounds(window);
         view.writeFill(' ', -1, -1);
 
         int keySize = 0;
@@ -58,7 +58,7 @@ public class MenuElement implements DisplayElement {
         }
     }
 
-    public Window getWindow() {
+    public DisplayBounds getDisplayBounds() {
         return window;
     }
 
