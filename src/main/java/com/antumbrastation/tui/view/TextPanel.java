@@ -67,7 +67,14 @@ public class TextPanel extends JPanel{
                         descent = 0;
                     }
 
-                    g.drawGlyphVector(v, col * gridWidth, (row + 1) * gridHeight - descent - 1);
+                    float offset = (float) v.getVisualBounds().getMinX();
+                    float width = (float) v.getVisualBounds().getWidth();
+                    width = gridWidth - width;
+                    width /= 2;
+
+                    float squareX = col * gridWidth;
+                    float squareY = (row + 1) * gridHeight;
+                    g.drawGlyphVector(v, squareX - offset + width, squareY - descent - 1);
                 }
             }
         }
