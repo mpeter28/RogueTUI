@@ -1,8 +1,5 @@
 package com.antumbrastation.tui;
 
-import com.antumbrastation.tui.InputTask;
-import com.antumbrastation.tui.TextPanel;
-
 import java.awt.event.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -81,7 +78,7 @@ public class InputTaskRunner implements KeyListener, MouseListener, MouseMotionL
             x /= width;
             y /= height;
 
-            task.processMouseClick(y, x, e.getButton(), null);
+            task.processMouseClick(y, x, e.getButton());
             finishedTaskCheck();
         }
     }
@@ -113,7 +110,7 @@ public class InputTaskRunner implements KeyListener, MouseListener, MouseMotionL
                 mouseRow = y;
                 mouseColumn = x;
 
-                task.processMouseMove(y, x, null);
+                task.processMouseMove(y, x);
                 finishedTaskCheck();
             }
         }

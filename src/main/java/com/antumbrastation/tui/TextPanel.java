@@ -1,8 +1,5 @@
 package com.antumbrastation.tui;
 
-import com.antumbrastation.tui.ColorPalette;
-import com.antumbrastation.tui.DisplayView;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.font.GlyphVector;
