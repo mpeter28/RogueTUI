@@ -32,10 +32,8 @@ public class InputTaskRunner implements KeyListener, MouseListener, MouseMotionL
         specialKeys = new HashSet<String>();
     }
 
-    public boolean runTask(InputTask task) {
+    public boolean runInputTask(InputTask task) {
         this.task = task;
-        task.initialize();
-
         finishedBarrier = new CountDownLatch(1);
         startBarrier.set(true);
 
