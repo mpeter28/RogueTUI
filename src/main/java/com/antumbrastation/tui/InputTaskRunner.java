@@ -20,12 +20,12 @@ public class InputTaskRunner implements KeyListener, MouseListener, MouseMotionL
 
     private Set<String> specialKeys;
 
-    public InputTaskRunner(TextPanel view) {
+    public InputTaskRunner(int height, int width) {
         mouseRow = -1;
         mouseColumn = -1;
 
-        height = view.getGridHeight();
-        width = view.getGridWidth();
+        this.height = height;
+        this.width = width;
 
         startBarrier = new AtomicBoolean(false);
 
