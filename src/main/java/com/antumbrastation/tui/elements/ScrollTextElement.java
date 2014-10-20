@@ -1,22 +1,22 @@
 package com.antumbrastation.tui.elements;
 
 import com.antumbrastation.tui.DisplayBounds;
-import com.antumbrastation.tui.DisplayView;
+import com.antumbrastation.tui.DisplayBuffer;
 
 public class ScrollTextElement implements DisplayElement {
 
-    private DisplayBounds window;
+    private DisplayBounds bounds;
     private String[] lines;
     private int[] colors;
     private int[] highlights;
 
     private boolean bottomToTop;
 
-    public ScrollTextElement(boolean bottomToTop, DisplayBounds window) {
-        this.window = window;
+    public ScrollTextElement(boolean bottomToTop, DisplayBounds bounds) {
+        this.bounds = bounds;
         this.bottomToTop = bottomToTop;
 
-        int height = window.getHeight();
+        int height = bounds.getHeight();
         lines = new String[height];
         colors = new int[height];
         highlights = new int[height];
@@ -42,8 +42,8 @@ public class ScrollTextElement implements DisplayElement {
         }
     }
 
-    public void display(DisplayView view) {
-        view.setBounds(window);
+    public void display(DisplayBuffer view) {
+        view.setBounds(bounds);
         view.writeFill(' ', -1, -1);
 
         if (bottomToTop) {
@@ -58,7 +58,7 @@ public class ScrollTextElement implements DisplayElement {
     }
 
     public DisplayBounds getDisplayBounds() {
-        return window;
+        return bounds;
     }
 
 }

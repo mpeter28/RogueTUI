@@ -5,41 +5,43 @@ import java.awt.*;
 import java.awt.font.GlyphVector;
 
 public class TextPanel extends JPanel{
-
     private ColorPalette colors;
     private Font font;
 
     private int rows, columns;
     private int gridWidth, gridHeight;
-    private DisplayView displayView;
 
-    public TextPanel(ColorPalette colors, Font font, int rows, int columns) {
-        this.gridHeight = font.getSize() + 2;
-        this.gridWidth = gridHeight * 2 / 3;
+    private char[][] text;
+    private int[][] textColor;
+    private int[][] highlight;
+
+    public TextPanel(ColorPalette colors, Font font, int rows, int columns, int gridHeight, int gridWidth) {
+        this.gridHeight = gridHeight;
+        this.gridWidth = gridWidth;
         this.colors = colors;
         this.font = font;
         this.rows = rows;
         this.columns = columns;
 
-        displayView = new DisplayView(rows, columns);
-
         this.setBackground(colors.defaultHighlightColor());
         this.setPreferredSize(new Dimension(columns * gridWidth, rows * gridHeight));
     }
 
-    public DisplayView getDisplayView() {
-        return displayView;
+    public void update(char[][] text, int[][] textColor, int[][] highlight) {
+        this.text = text;
+        this.textColor = textColor;
+        this.highlight = highlight;
     }
 
     public void paint(Graphics graphics) {
+        if (text == null || textColor == null || highlight == null)
+            return;
+
         Graphics2D g = (Graphics2D) graphics;
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
         g.setFont(font);
 
-        char[][] text = displayView.getText();
-        int[][] textColor = displayView.getTextColor();
-        int[][] highlight = displayView.getHighlightColor();
         char[] glyph = new char[1];
 
         for (int row = 0; row < rows; row++) {
@@ -78,21 +80,5 @@ public class TextPanel extends JPanel{
                 }
             }
         }
-    }
-
-    public int getRows() {
-        return rows;
-    }
-
-    public int getColumns() {
-        return columns;
-    }
-
-    public int getGridWidth() {
-        return gridWidth;
-    }
-
-    public int getGridHeight() {
-        return gridHeight;
     }
 }

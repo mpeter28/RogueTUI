@@ -1,13 +1,13 @@
 package com.antumbrastation.tui.elements;
 
 import com.antumbrastation.tui.DisplayBounds;
-import com.antumbrastation.tui.DisplayView;
+import com.antumbrastation.tui.DisplayBuffer;
 
 import java.util.ArrayList;
 
 public class FrameElement implements DisplayElement {
 
-    private DisplayBounds window;
+    private DisplayBounds bounds;
     private ArrayList<Line> vertical;
     private ArrayList<Line> horizontal;
     private int lineColor;
@@ -25,8 +25,8 @@ public class FrameElement implements DisplayElement {
         }
     }
 
-    public FrameElement(DisplayBounds window) {
-        this.window = window;
+    public FrameElement(DisplayBounds bounds) {
+        this.bounds = bounds;
         this.lineColor = -1;
 
         vertical = new ArrayList<Line>();
@@ -55,8 +55,8 @@ public class FrameElement implements DisplayElement {
         this.verticalChar = verticalChar;
     }
 
-    public void display(DisplayView view) {
-        view.setBounds(window);
+    public void display(DisplayBuffer view) {
+        view.setBounds(bounds);
 
         for (int i = 0; i < horizontal.size(); i++) {
             Line line = horizontal.get(i);
@@ -72,7 +72,7 @@ public class FrameElement implements DisplayElement {
     }
 
     public DisplayBounds getDisplayBounds() {
-        return window;
+        return bounds;
     }
 
 }

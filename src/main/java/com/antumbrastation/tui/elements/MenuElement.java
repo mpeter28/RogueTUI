@@ -1,11 +1,11 @@
 package com.antumbrastation.tui.elements;
 
 import com.antumbrastation.tui.DisplayBounds;
-import com.antumbrastation.tui.DisplayView;
+import com.antumbrastation.tui.DisplayBuffer;
 
 public class MenuElement implements DisplayElement {
 
-    private DisplayBounds window;
+    private DisplayBounds bounds;
 
     private int dividerColor;
     private char dividerChar;
@@ -16,8 +16,8 @@ public class MenuElement implements DisplayElement {
 
     private int currentOption, topOption, bottomOption;
 
-    public MenuElement(DisplayBounds window) {
-        this.window = window;
+    public MenuElement(DisplayBounds bounds) {
+        this.bounds = bounds;
     }
 
     public void setMeunOptions(String[] keys, String[] options, int[] keyColors, int[] optionColors) {
@@ -28,7 +28,7 @@ public class MenuElement implements DisplayElement {
 
         currentOption = 0;
         topOption = 0;
-        bottomOption = Math.min(keys.length, window.getHeight());
+        bottomOption = Math.min(keys.length, bounds.getHeight());
     }
 
     public void setDivider(char dividerChar, int dividerColor) {
@@ -36,8 +36,8 @@ public class MenuElement implements DisplayElement {
         this.dividerColor = dividerColor;
     }
 
-    public void display(DisplayView view) {
-        view.setBounds(window);
+    public void display(DisplayBuffer view) {
+        view.setBounds(bounds);
         view.writeFill(' ', -1, -1);
 
         int keySize = 0;
@@ -59,7 +59,7 @@ public class MenuElement implements DisplayElement {
     }
 
     public DisplayBounds getDisplayBounds() {
-        return window;
+        return bounds;
     }
 
     public String[] currentSelection() {
@@ -86,7 +86,7 @@ public class MenuElement implements DisplayElement {
 
         if (currentOption < topOption) {
             topOption = currentOption;
-            bottomOption = topOption + window.getHeight();
+            bottomOption = topOption + bounds.getHeight();
         }
 
         if (bottomOption > keys.length) {
@@ -102,7 +102,7 @@ public class MenuElement implements DisplayElement {
 
         if (currentOption >= bottomOption) {
             bottomOption = currentOption + 1;
-            topOption = bottomOption - window.getHeight();
+            topOption = bottomOption - bounds.getHeight();
         }
 
         if (topOption < 0) {

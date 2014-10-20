@@ -1,16 +1,16 @@
 package com.antumbrastation.tui;
 
-public class DisplayView {
+public class DisplayBuffer {
 
     private int[][] textColor;
     private int[][] highlightColor;
     private char[][] text;
 
-    private DisplayBounds window;
+    private DisplayBounds bounds;
 
     private int columns, rows;
 
-    public DisplayView(int rows, int columns) {
+    public DisplayBuffer(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
 
@@ -31,18 +31,18 @@ public class DisplayView {
         return text;
     }
 
-    public void setBounds(DisplayBounds window) {
-        this.window = window;
+    public void setBounds(DisplayBounds bounds) {
+        this.bounds = bounds;
     }
 
     public boolean writeChar(char character, int row, int column, int color, int highlight) {
-        if (window.outOfWindow(row, column))
+        if (!bounds.inBounds(row, column))
             return false;
 
-        row += window.getCornerRow();
-        column += window.getCornerColumn();
+        row += bounds.getCornerRow();
+        column += bounds.getCornerColumn();
 
-        if (outOfBounds(row, column))
+        if (!inBounds(row, column))
             return false;
 
         text[row][column] = character;
@@ -65,15 +65,11 @@ public class DisplayView {
     }
 
     public boolean writeFill(char fill, int color, int highlight) {
-        for (int i = 0; i < window.getHeight(); i++)
-            for (int j = 0; j < window.getWidth(); j++)
+        for (int i = 0; i < bounds.getHeight(); i++)
+            for (int j = 0; j < bounds.getWidth(); j++)
                 writeChar(fill, i, j, color, highlight);
 
         return true;
-    }
-
-    public boolean outOfBounds(int row, int column) {
-        return !inBounds(row, column);
     }
 
     public boolean inBounds(int row, int column) {

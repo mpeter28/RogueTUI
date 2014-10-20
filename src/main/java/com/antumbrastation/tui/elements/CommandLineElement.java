@@ -1,13 +1,13 @@
 package com.antumbrastation.tui.elements;
 
 import com.antumbrastation.tui.DisplayBounds;
-import com.antumbrastation.tui.DisplayView;
+import com.antumbrastation.tui.DisplayBuffer;
 
 import java.util.ArrayList;
 
 public class CommandLineElement implements DisplayElement {
 
-    private DisplayBounds window;
+    private DisplayBounds bounds;
 
     private ArrayList<Character> command;
     private int textColor;
@@ -17,7 +17,7 @@ public class CommandLineElement implements DisplayElement {
     private int cursorColor;
 
     public CommandLineElement(DisplayBounds window) {
-        this.window = window;
+        this.bounds = window;
 
         command = new ArrayList<>();
         textColor = -1;
@@ -83,13 +83,13 @@ public class CommandLineElement implements DisplayElement {
             cursorPosition = command.size();
         }
 
-        if (cursorPosition - leftPosition >= window.getWidth()) {
-            leftPosition = cursorPosition - window.getWidth() + 1;
+        if (cursorPosition - leftPosition >= bounds.getWidth()) {
+            leftPosition = cursorPosition - bounds.getWidth() + 1;
         }
     }
 
-    public void display(DisplayView view) {
-        view.setBounds(window);
+    public void display(DisplayBuffer view) {
+        view.setBounds(bounds);
         view.writeFill(' ', -1, -1);
 
         for (int i = leftPosition; i < command.size(); i++) {
@@ -105,7 +105,7 @@ public class CommandLineElement implements DisplayElement {
     }
 
     public DisplayBounds getDisplayBounds() {
-        return window;
+        return bounds;
     }
 
     public void setTextColor(int textColor) {

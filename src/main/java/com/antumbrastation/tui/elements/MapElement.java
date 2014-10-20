@@ -1,21 +1,21 @@
 package com.antumbrastation.tui.elements;
 
 import com.antumbrastation.tui.DisplayBounds;
-import com.antumbrastation.tui.DisplayView;
+import com.antumbrastation.tui.DisplayBuffer;
 
 public class MapElement implements DisplayElement {
 
-    private DisplayBounds window;
+    private DisplayBounds bounds;
 
     private char[][] text;
     private int[][] highlight;
     private int[][] textColor;
 
-    public MapElement(DisplayBounds window) {
-        this.window = window;
+    public MapElement(DisplayBounds bounds) {
+        this.bounds = bounds;
 
-        int rows = window.getHeight();
-        int columns = window.getWidth();
+        int rows = bounds.getHeight();
+        int columns = bounds.getWidth();
 
         text = new char[rows][columns];
         highlight = new int[rows][columns];
@@ -28,11 +28,11 @@ public class MapElement implements DisplayElement {
         this.textColor[y][x] = textColor;
     }
 
-    public void display(DisplayView view) {
-        view.setBounds(window);
+    public void display(DisplayBuffer view) {
+        view.setBounds(bounds);
 
-        int width = window.getWidth();
-        int height = window.getHeight();
+        int width = bounds.getWidth();
+        int height = bounds.getHeight();
 
         for (int i = 0; i < height; i++)
             for (int j = 0; j < width; j++)
@@ -40,7 +40,7 @@ public class MapElement implements DisplayElement {
     }
 
     public DisplayBounds getDisplayBounds() {
-        return window;
+        return bounds;
     }
 
 }

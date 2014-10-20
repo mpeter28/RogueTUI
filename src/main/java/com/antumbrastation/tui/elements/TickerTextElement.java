@@ -1,7 +1,7 @@
 package com.antumbrastation.tui.elements;
 
 import com.antumbrastation.tui.DisplayBounds;
-import com.antumbrastation.tui.DisplayView;
+import com.antumbrastation.tui.DisplayBuffer;
 
 import java.util.ArrayList;
 
@@ -10,15 +10,15 @@ public class TickerTextElement implements DisplayElement {
     private ArrayList<String> pageWords;
     private ArrayList<Integer> pageColors;
 
-    private DisplayBounds window;
+    private DisplayBounds bounds;
     private int nextWord;
 
     private String moreMessage;
     private int moreMessageColor;
     private int moreMessageHighlight;
 
-    public TickerTextElement(DisplayBounds window) {
-        this.window = window;
+    public TickerTextElement(DisplayBounds bounds) {
+        this.bounds = bounds;
 
         pageWords = new ArrayList<String>();
         pageColors = new ArrayList<Integer>();
@@ -28,8 +28,8 @@ public class TickerTextElement implements DisplayElement {
         moreMessageHighlight = -1;
     }
 
-    public void display(DisplayView view) {
-        view.setBounds(window);
+    public void display(DisplayBuffer view) {
+        view.setBounds(bounds);
         view.writeFill(' ', -1, -1);
 
         int row = 0;
@@ -41,10 +41,10 @@ public class TickerTextElement implements DisplayElement {
             String word = pageWords.get(i);
             int color = pageColors.get(i);
 
-            if (window.getWidth() - column < word.length()) {
+            if (bounds.getWidth() - column < word.length()) {
                 row++;
                 column = 0;
-                if (row >= window.getHeight() - 1)
+                if (row >= bounds.getHeight() - 1)
                     break;
             }
 
@@ -57,13 +57,13 @@ public class TickerTextElement implements DisplayElement {
         }
 
         if (hasMore()) {
-            view.writeLine(moreMessage, window.getHeight() - 1,
-                    window.getWidth() - moreMessage.length(), moreMessageColor, moreMessageHighlight);
+            view.writeLine(moreMessage, bounds.getHeight() - 1,
+                    bounds.getWidth() - moreMessage.length(), moreMessageColor, moreMessageHighlight);
         }
     }
 
     public DisplayBounds getDisplayBounds() {
-        return window;
+        return bounds;
     }
 
     public void setMoreMessage(String message, int color, int highlight) {
