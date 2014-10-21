@@ -1,8 +1,5 @@
 package com.antumbrastation.tui.elements;
 
-import com.antumbrastation.tui.DisplayBounds;
-import com.antumbrastation.tui.DisplayBuffer;
-
 public class ScrollTextElement implements DisplayElement {
 
     private DisplayBounds bounds;
@@ -42,8 +39,8 @@ public class ScrollTextElement implements DisplayElement {
         }
     }
 
-    public void display(DisplayBuffer view) {
-        view.setBounds(bounds);
+    public void pushToBuffer(DisplayBuffer view) {
+        view.setWritingBounds(bounds);
         view.writeFill(' ', -1, -1);
 
         if (bottomToTop) {

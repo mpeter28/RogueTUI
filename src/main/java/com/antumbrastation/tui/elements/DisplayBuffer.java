@@ -1,18 +1,20 @@
-package com.antumbrastation.tui;
+package com.antumbrastation.tui.elements;
 
-public class DisplayBuffer {
+public class DisplayBuffer implements DisplayElement {
 
     private int[][] textColor;
     private int[][] highlightColor;
     private char[][] text;
 
-    private DisplayBounds bounds;
+    private DisplayBounds bufferBounds;
+    private DisplayBounds writingBounds;
 
-    private int columns, rows;
+    public DisplayBuffer(DisplayBounds bounds) {
+        bufferBounds = bounds;
+        writingBounds = bounds;
 
-    public DisplayBuffer(int rows, int columns) {
-        this.rows = rows;
-        this.columns = columns;
+        int rows = bounds.getHeight();
+        int columns = bounds.getWidth();
 
         textColor = new int[rows][columns];
         highlightColor = new int[rows][columns];
@@ -31,18 +33,18 @@ public class DisplayBuffer {
         return text;
     }
 
-    public void setBounds(DisplayBounds bounds) {
-        this.bounds = bounds;
+    public void setWritingBounds(DisplayBounds writingBounds) {
+        this.writingBounds = writingBounds;
     }
 
     public boolean writeChar(char character, int row, int column, int color, int highlight) {
-        if (!bounds.inBounds(row, column))
+        if (!writingBounds.inBounds(row, column))
             return false;
 
-        row += bounds.getCornerRow();
-        column += bounds.getCornerColumn();
+        row += writingBounds.getCornerRow();
+        column += writingBounds.getCornerColumn();
 
-        if (!inBounds(row, column))
+        if (!bufferBounds.inBounds(row, column))
             return false;
 
         text[row][column] = character;
@@ -65,15 +67,26 @@ public class DisplayBuffer {
     }
 
     public boolean writeFill(char fill, int color, int highlight) {
-        for (int i = 0; i < bounds.getHeight(); i++)
-            for (int j = 0; j < bounds.getWidth(); j++)
+        for (int i = 0; i < writingBounds.getHeight(); i++)
+            for (int j = 0; j < writingBounds.getWidth(); j++)
                 writeChar(fill, i, j, color, highlight);
 
         return true;
     }
 
-    public boolean inBounds(int row, int column) {
-        return row >= 0 && row < rows && column >= 0 && column < columns;
+    public void pushToBuffer(DisplayBuffer view) {
+        view.setWritingBounds(bufferBounds);
+
+        int rows = bufferBounds.getHeight();
+        int columns = bufferBounds.getWidth();
+
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < columns; j++)
+                view.writeChar(text[i][j], i, j, textColor[i][j], highlightColor[i][j]);
+    }
+
+    public DisplayBounds getDisplayBounds() {
+        return bufferBounds;
     }
 
 }

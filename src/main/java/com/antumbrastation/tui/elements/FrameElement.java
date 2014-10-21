@@ -1,8 +1,5 @@
 package com.antumbrastation.tui.elements;
 
-import com.antumbrastation.tui.DisplayBounds;
-import com.antumbrastation.tui.DisplayBuffer;
-
 import java.util.ArrayList;
 
 public class FrameElement implements DisplayElement {
@@ -55,8 +52,8 @@ public class FrameElement implements DisplayElement {
         this.verticalChar = verticalChar;
     }
 
-    public void display(DisplayBuffer view) {
-        view.setBounds(bounds);
+    public void pushToBuffer(DisplayBuffer view) {
+        view.setWritingBounds(bounds);
 
         for (int i = 0; i < horizontal.size(); i++) {
             Line line = horizontal.get(i);

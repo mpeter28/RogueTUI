@@ -1,4 +1,4 @@
-package com.antumbrastation.tui;
+package com.antumbrastation.tui.elements;
 
 public class DisplayBounds {
     private int cornerRow, cornerColumn;

@@ -1,8 +1,5 @@
 package com.antumbrastation.tui.elements;
 
-import com.antumbrastation.tui.DisplayBounds;
-import com.antumbrastation.tui.DisplayBuffer;
-
 import java.util.ArrayList;
 
 public class TickerTextElement implements DisplayElement {
@@ -28,8 +25,8 @@ public class TickerTextElement implements DisplayElement {
         moreMessageHighlight = -1;
     }
 
-    public void display(DisplayBuffer view) {
-        view.setBounds(bounds);
+    public void pushToBuffer(DisplayBuffer view) {
+        view.setWritingBounds(bounds);
         view.writeFill(' ', -1, -1);
 
         int row = 0;

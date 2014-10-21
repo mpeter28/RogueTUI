@@ -1,8 +1,5 @@
 package com.antumbrastation.tui.elements;
 
-import com.antumbrastation.tui.DisplayBounds;
-import com.antumbrastation.tui.DisplayBuffer;
-
 public class LabelElement implements DisplayElement {
 
     private DisplayBounds bounds;
@@ -14,8 +11,8 @@ public class LabelElement implements DisplayElement {
         this.bounds = bounds;
     }
 
-    public void display(DisplayBuffer view) {
-        view.setBounds(bounds);
+    public void pushToBuffer(DisplayBuffer view) {
+        view.setWritingBounds(bounds);
 
         view.writeLine(text, 0, 0, color, highlight);
     }

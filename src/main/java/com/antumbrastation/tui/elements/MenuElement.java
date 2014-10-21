@@ -1,8 +1,5 @@
 package com.antumbrastation.tui.elements;
 
-import com.antumbrastation.tui.DisplayBounds;
-import com.antumbrastation.tui.DisplayBuffer;
-
 public class MenuElement implements DisplayElement {
 
     private DisplayBounds bounds;
@@ -36,8 +33,8 @@ public class MenuElement implements DisplayElement {
         this.dividerColor = dividerColor;
     }
 
-    public void display(DisplayBuffer view) {
-        view.setBounds(bounds);
+    public void pushToBuffer(DisplayBuffer view) {
+        view.setWritingBounds(bounds);
         view.writeFill(' ', -1, -1);
 
         int keySize = 0;

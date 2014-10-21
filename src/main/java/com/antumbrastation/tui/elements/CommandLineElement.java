@@ -1,8 +1,5 @@
 package com.antumbrastation.tui.elements;
 
-import com.antumbrastation.tui.DisplayBounds;
-import com.antumbrastation.tui.DisplayBuffer;
-
 import java.util.ArrayList;
 
 public class CommandLineElement implements DisplayElement {
@@ -88,8 +85,8 @@ public class CommandLineElement implements DisplayElement {
         }
     }
 
-    public void display(DisplayBuffer view) {
-        view.setBounds(bounds);
+    public void pushToBuffer(DisplayBuffer view) {
+        view.setWritingBounds(bounds);
         view.writeFill(' ', -1, -1);
 
         for (int i = leftPosition; i < command.size(); i++) {
