@@ -23,7 +23,6 @@ public class TextPanel extends JPanel{
         this.rows = rows;
         this.columns = columns;
 
-        this.setBackground(colors.defaultHighlightColor());
         this.setPreferredSize(new Dimension(columns * gridWidth, rows * gridHeight));
     }
 
@@ -34,10 +33,13 @@ public class TextPanel extends JPanel{
     }
 
     public void paint(Graphics graphics) {
-        if (text == null || textColor == null || highlight == null)
-            return;
-
         Graphics2D g = (Graphics2D) graphics;
+        if (text == null || textColor == null || highlight == null) {
+            g.setBackground(colors.defaultHighlightColor());
+            g.clearRect(0, 0, gridWidth * columns, gridHeight * rows);
+            return;
+        }
+
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
         g.setFont(font);
