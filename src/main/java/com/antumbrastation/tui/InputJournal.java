@@ -10,30 +10,34 @@ import java.util.concurrent.TimeUnit;
 public class InputJournal implements KeyListener, MouseListener, MouseMotionListener {
     private int rowHeight;
     private int columnWidth;
-
     private int currentMouseRow;
     private int currentMouseColumn;
     private BlockingQueue<JournalUpdate> updates;
 
+    private String inputEventType;
     private char typedCharacter;
-    private String nonCharacterKey;
+    private String keyName;
+    private int buttonNumber;
+
     private Set<String> keysDown;
-    private int buttonClicked;
-    private boolean mouseMoved;
+    private Set<Integer> mouseButtonsDown;
     private int mouseRow;
     private int mouseColumn;
 
     public InputJournal(int rowHeight, int columnWidth) {
         this.rowHeight = rowHeight;
         this.columnWidth = columnWidth;
-
         currentMouseRow = -1;
         currentMouseColumn = -1;
         updates = new LinkedBlockingQueue<>();
 
+        inputEventType = "None";
         typedCharacter = 0;
+        buttonNumber = MouseEvent.NOBUTTON;
+        keyName = null;
+
         keysDown = new HashSet<>();
-        buttonClicked = MouseEvent.NOBUTTON;
+        mouseButtonsDown = new HashSet<>();
         mouseRow = -1;
         mouseColumn = -1;
     }
@@ -41,6 +45,10 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
     public boolean updateInput(int millisecondWait) {
         try {
             JournalUpdate update = updates.poll(millisecondWait, TimeUnit.MILLISECONDS);
+            inputEventType = "None";
+            typedCharacter = 0;
+            keyName = null;
+            buttonNumber = MouseEvent.NOBUTTON;
 
             if (update == null)
                 return false;
@@ -52,24 +60,28 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
         }
     }
 
+    public String getInputEventType() {
+        return inputEventType;
+    }
+
     public char getTypedCharacter() {
         return typedCharacter;
     }
 
-    public String getNonCharacterKey() {
-        return nonCharacterKey;
+    public String getKeyName() {
+        return keyName;
+    }
+
+    public int getButtonNumber() {
+        return buttonNumber;
     }
 
     public boolean isKeyDown(String key) {
         return keysDown.contains(key);
     }
 
-    public int getButtonClicked() {
-        return buttonClicked;
-    }
-
-    public boolean wasMouseMoved() {
-        return mouseMoved;
+    public boolean isMouseButtonDown(int button) {
+        return mouseButtonsDown.contains(button);
     }
 
     public int getMouseRow() {
@@ -81,37 +93,27 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
     }
 
     public void keyTyped(KeyEvent e) {
-        updates.add(new CharacterTypedUpdate(e.getKeyChar()));
     }
 
     public void keyPressed(KeyEvent e) {
-        if (!Character.isDefined(e.getKeyChar())) {
-            String keyText = KeyEvent.getKeyText(e.getKeyCode());
-            updates.add(new NonCharacterKeyUpdate(keyText, true));
-        }
+        String keyText = KeyEvent.getKeyText(e.getKeyCode());
+        updates.add(new KeyUpdate(e.getKeyChar(), keyText, true));
     }
 
     public void keyReleased(KeyEvent e) {
-        if (!Character.isDefined(e.getKeyChar())) {
-            String keyText = KeyEvent.getKeyText(e.getKeyCode());
-            updates.add(new NonCharacterKeyUpdate(keyText, false));
-        }
+        String keyText = KeyEvent.getKeyText(e.getKeyCode());
+        updates.add(new KeyUpdate(e.getKeyChar(), keyText, false));
     }
 
     public void mouseClicked(MouseEvent e) {
-        int x = e.getX();
-        int y = e.getY();
-
-        x /= columnWidth;
-        y /= rowHeight;
-
-        updates.add(new MouseUpdate(e.getButton(), false, y, x));
     }
 
     public void mousePressed(MouseEvent e) {
+        updates.add(new MouseButtonUpdate(e.getButton(), true));
     }
 
     public void mouseReleased(MouseEvent e) {
+        updates.add(new MouseButtonUpdate(e.getButton(), false));
     }
 
     public void mouseEntered(MouseEvent e) {
@@ -134,7 +136,7 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
             currentMouseRow = y;
             currentMouseColumn = x;
 
-            updates.add(new MouseUpdate(MouseEvent.NOBUTTON, true, y, x));
+            updates.add(new MouseMoveUpdate(currentMouseRow, currentMouseColumn));
         }
     }
 
@@ -142,63 +144,64 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
         public void makeJournalChanges();
     }
 
-    private class CharacterTypedUpdate implements JournalUpdate{
+    private class KeyUpdate implements JournalUpdate {
         private char typedCharacter;
-
-        private CharacterTypedUpdate(char typedCharacter) {
-            this.typedCharacter = typedCharacter;
-        }
-
-        public void makeJournalChanges() {
-            InputJournal.this.typedCharacter = typedCharacter;
-            InputJournal.this.nonCharacterKey = null;
-            InputJournal.this.buttonClicked = MouseEvent.NOBUTTON;
-            InputJournal.this.mouseMoved = false;
-        }
-    }
-
-    private class NonCharacterKeyUpdate implements JournalUpdate {
-        private String specialKey;
+        private String keyName;
         private boolean pressNotRelease;
 
-        private NonCharacterKeyUpdate(String specialKey, boolean pressNotRelease) {
-            this.specialKey = specialKey;
+        private KeyUpdate(char typedCharacter, String keyName, boolean pressNotRelease) {
+            this.typedCharacter = typedCharacter;
+            this.keyName = keyName;
             this.pressNotRelease = pressNotRelease;
         }
 
         public void makeJournalChanges() {
-            InputJournal.this.typedCharacter = 0;
-            InputJournal.this.nonCharacterKey = specialKey;
-            InputJournal.this.buttonClicked = MouseEvent.NOBUTTON;
-            InputJournal.this.mouseMoved = false;
-
+            InputJournal.this.typedCharacter = typedCharacter;
+            InputJournal.this.keyName = keyName;
             if (pressNotRelease) {
-                keysDown.add(this.specialKey);
+                InputJournal.this.keysDown.add(keyName);
+                InputJournal.this.inputEventType = "KeyDown";
             } else {
-                keysDown.remove(this.specialKey);
+                InputJournal.this.keysDown.remove(keyName);
+                InputJournal.this.inputEventType = "KeyHit";
             }
         }
     }
 
-    private class MouseUpdate implements JournalUpdate{
-        private int buttonClicked;
-        private boolean mouseMoved;
-        private int mouseRow, mouseColumn;
+    private class MouseMoveUpdate implements JournalUpdate {
+        private int row, column;
 
-        private MouseUpdate(int buttonClicked, boolean mouseMoved, int mouseRow, int mouseColumn) {
-            this.buttonClicked = buttonClicked;
-            this.mouseMoved = mouseMoved;
-            this.mouseRow = mouseRow;
-            this.mouseColumn = mouseColumn;
+        private MouseMoveUpdate(int row, int column) {
+            this.row = row;
+            this.column = column;
         }
 
         public void makeJournalChanges() {
-            InputJournal.this.typedCharacter = 0;
-            InputJournal.this.nonCharacterKey = null;
-            InputJournal.this.buttonClicked = buttonClicked;
-            InputJournal.this.mouseMoved = mouseMoved;
-            InputJournal.this.mouseRow = mouseRow;
-            InputJournal.this.mouseColumn = mouseColumn;
+            InputJournal.this.mouseRow = row;
+            InputJournal.this.mouseColumn = column;
+            InputJournal.this.inputEventType = "MouseMove";
+        }
+    }
+
+    private class MouseButtonUpdate implements JournalUpdate {
+        private int button;
+        private boolean pressNotRelease;
+
+        private MouseButtonUpdate(int button, boolean pressNotRelease) {
+            this.button = button;
+            this.pressNotRelease = pressNotRelease;
+        }
+
+        public void makeJournalChanges() {
+            InputJournal.this.buttonNumber = button;
+            if (pressNotRelease) {
+                InputJournal.this.mouseButtonsDown.add(button);
+
+                InputJournal.this.inputEventType = "MouseDown";
+            } else {
+                InputJournal.this.mouseButtonsDown.remove(button);
+                InputJournal.this.inputEventType = "MouseClick";
+            }
         }
     }
 }
