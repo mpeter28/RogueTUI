@@ -123,6 +123,7 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
     }
 
     public void mouseDragged(MouseEvent e) {
+        mouseMoved(e);
     }
 
     public void mouseMoved(MouseEvent e) {
