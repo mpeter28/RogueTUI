@@ -31,10 +31,7 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
         currentMouseColumn = -1;
         updates = new LinkedBlockingQueue<>();
 
-        inputEventType = "None";
-        typedCharacter = 0;
-        buttonNumber = MouseEvent.NOBUTTON;
-        keyName = null;
+        cleanJournal();
 
         keysDown = new HashSet<>();
         mouseButtonsDown = new HashSet<>();
@@ -43,12 +40,9 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
     }
 
     public boolean updateInput(int millisecondWait) {
+        cleanJournal();
         try {
             JournalUpdate update = updates.poll(millisecondWait, TimeUnit.MILLISECONDS);
-            inputEventType = "None";
-            typedCharacter = 0;
-            keyName = null;
-            buttonNumber = MouseEvent.NOBUTTON;
 
             if (update == null)
                 return false;
@@ -58,6 +52,13 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
         } catch (InterruptedException ignored) {
             return false;
         }
+    }
+
+    private void cleanJournal() {
+        inputEventType = "None";
+        typedCharacter = 0;
+        keyName = null;
+        buttonNumber = MouseEvent.NOBUTTON;
     }
 
     public String getInputEventType() {
