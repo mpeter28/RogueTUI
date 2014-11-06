@@ -11,7 +11,7 @@ public class DisplayBuffer implements DisplayElement {
 
     public DisplayBuffer(DisplayBounds bounds) {
         bufferBounds = bounds;
-        writingBounds = bounds;
+        writingBounds = new DisplayBounds(bounds.getHeight(), bounds.getWidth());
 
         int rows = bounds.getHeight();
         int columns = bounds.getWidth();
