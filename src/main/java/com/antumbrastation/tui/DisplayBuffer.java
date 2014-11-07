@@ -36,41 +36,32 @@ public class DisplayBuffer {
         this.writingBounds = writingBounds;
     }
 
-    public boolean writeChar(char character, int row, int column, int color, int highlight) {
+    public void writeChar(char character, int row, int column, int color, int highlight) {
         if (!writingBounds.inBounds(row, column))
-            return false;
+            return;
 
         row += writingBounds.getCornerRow();
         column += writingBounds.getCornerColumn();
 
         if (!bufferBounds.inBounds(row, column))
-            return false;
+            return;
 
         text[row][column] = character;
         textColor[row][column] = color;
         highlightColor[row][column] = highlight;
-
-        return true;
     }
 
-    public boolean writeLine(String line, int row, int column, int color, int highlight) {
-        boolean tooLong;
+    public void writeLine(String line, int row, int column, int color, int highlight) {
         for (char character: line.toCharArray()) {
-            tooLong = !writeChar(character, row, column, color, highlight);
-            if (tooLong)
-                return false;
+            writeChar(character, row, column, color, highlight);
             column++;
         }
-
-        return true;
     }
 
-    public boolean writeFill(char fill, int color, int highlight) {
+    public void writeFill(char fill, int color, int highlight) {
         for (int i = 0; i < writingBounds.getHeight(); i++)
             for (int j = 0; j < writingBounds.getWidth(); j++)
                 writeChar(fill, i, j, color, highlight);
-
-        return true;
     }
 
     public void copyToBuffer(DisplayBuffer copyTo) {
