@@ -27,8 +27,8 @@ public class ColorPalette {
     }
 
     public Color indexToColor(int index) {
-        if (index < 0 || index > colors.length)
-            return Color.black;
+        if (index < 0 || index >= colors.length)
+            return highlightColor;
 
         return colors[index];
     }
