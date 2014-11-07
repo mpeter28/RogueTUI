@@ -1,7 +1,6 @@
-package com.antumbrastation.tui.elements;
+package com.antumbrastation.tui;
 
-public class DisplayBuffer implements DisplayElement {
-
+public class DisplayBuffer {
     private int[][] textColor;
     private int[][] highlightColor;
     private char[][] text;
@@ -74,19 +73,23 @@ public class DisplayBuffer implements DisplayElement {
         return true;
     }
 
-    public void pushToBuffer(DisplayBuffer view) {
-        view.setWritingBounds(bufferBounds);
+    public void copyToBuffer(DisplayBuffer copyTo) {
+        copyTo.setWritingBounds(bufferBounds);
 
         int rows = bufferBounds.getHeight();
         int columns = bufferBounds.getWidth();
 
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
-                view.writeChar(text[i][j], i, j, textColor[i][j], highlightColor[i][j]);
+                copyTo.writeChar(text[i][j], i, j, textColor[i][j], highlightColor[i][j]);
     }
 
     public DisplayBounds getDisplayBounds() {
         return bufferBounds;
     }
 
+    public void moveDisplayBounds(int cornerRow, int cornerColumn) {
+        bufferBounds = new DisplayBounds(cornerRow, cornerColumn,
+                bufferBounds.getHeight(), bufferBounds.getWidth());
+    }
 }

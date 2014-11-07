@@ -1,13 +1,15 @@
 package com.antumbrastation.tui.elements;
 
+import com.antumbrastation.tui.DisplayBounds;
+import com.antumbrastation.tui.DisplayBuffer;
+
 import java.util.ArrayList;
 
-public class TickerTextElement implements DisplayElement {
+public class TickerTextElement extends DisplayElement {
 
     private ArrayList<String> pageWords;
     private ArrayList<Integer> pageColors;
 
-    private DisplayBounds bounds;
     private int nextWord;
 
     private String moreMessage;
@@ -15,7 +17,7 @@ public class TickerTextElement implements DisplayElement {
     private int moreMessageHighlight;
 
     public TickerTextElement(DisplayBounds bounds) {
-        this.bounds = bounds;
+        setDisplayBounds(bounds);
 
         pageWords = new ArrayList<String>();
         pageColors = new ArrayList<Integer>();
@@ -26,6 +28,8 @@ public class TickerTextElement implements DisplayElement {
     }
 
     public void pushToBuffer(DisplayBuffer view) {
+        DisplayBounds bounds = getDisplayBounds();
+
         view.setWritingBounds(bounds);
         view.writeFill(' ', -1, -1);
 
@@ -57,10 +61,6 @@ public class TickerTextElement implements DisplayElement {
             view.writeLine(moreMessage, bounds.getHeight() - 1,
                     bounds.getWidth() - moreMessage.length(), moreMessageColor, moreMessageHighlight);
         }
-    }
-
-    public DisplayBounds getDisplayBounds() {
-        return bounds;
     }
 
     public void setMoreMessage(String message, int color, int highlight) {

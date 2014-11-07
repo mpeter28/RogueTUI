@@ -1,24 +1,22 @@
 package com.antumbrastation.tui.elements;
 
-public class LabelElement implements DisplayElement {
+import com.antumbrastation.tui.DisplayBounds;
+import com.antumbrastation.tui.DisplayBuffer;
 
-    private DisplayBounds bounds;
+public class LabelElement extends DisplayElement {
+
     private String text;
     private int color;
     private int highlight;
 
     public LabelElement(DisplayBounds bounds) {
-        this.bounds = bounds;
+        setDisplayBounds(bounds);
     }
 
     public void pushToBuffer(DisplayBuffer view) {
-        view.setWritingBounds(bounds);
+        view.setWritingBounds(getDisplayBounds());
 
         view.writeLine(text, 0, 0, color, highlight);
-    }
-
-    public DisplayBounds getDisplayBounds() {
-        return bounds;
     }
 
     public void setText(String text) {

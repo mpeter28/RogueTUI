@@ -1,8 +1,9 @@
 package com.antumbrastation.tui.elements;
 
-public class MenuElement implements DisplayElement {
+import com.antumbrastation.tui.DisplayBounds;
+import com.antumbrastation.tui.DisplayBuffer;
 
-    private DisplayBounds bounds;
+public class MenuElement extends DisplayElement {
 
     private int dividerColor;
     private char dividerChar;
@@ -14,7 +15,7 @@ public class MenuElement implements DisplayElement {
     private int currentOption, topOption, bottomOption;
 
     public MenuElement(DisplayBounds bounds) {
-        this.bounds = bounds;
+        setDisplayBounds(bounds);
     }
 
     public void setMeunOptions(String[] keys, String[] options, int[] keyColors, int[] optionColors) {
@@ -25,7 +26,7 @@ public class MenuElement implements DisplayElement {
 
         currentOption = 0;
         topOption = 0;
-        bottomOption = Math.min(keys.length, bounds.getHeight());
+        bottomOption = Math.min(keys.length, getDisplayBounds().getHeight());
     }
 
     public void setDivider(char dividerChar, int dividerColor) {
@@ -34,7 +35,7 @@ public class MenuElement implements DisplayElement {
     }
 
     public void pushToBuffer(DisplayBuffer view) {
-        view.setWritingBounds(bounds);
+        view.setWritingBounds(getDisplayBounds());
         view.writeFill(' ', -1, -1);
 
         int keySize = 0;
@@ -53,10 +54,6 @@ public class MenuElement implements DisplayElement {
             view.writeLine(options[i], index, keySize + 2, optionColors[i], -1);
             index++;
         }
-    }
-
-    public DisplayBounds getDisplayBounds() {
-        return bounds;
     }
 
     public String[] currentSelection() {
@@ -83,7 +80,7 @@ public class MenuElement implements DisplayElement {
 
         if (currentOption < topOption) {
             topOption = currentOption;
-            bottomOption = topOption + bounds.getHeight();
+            bottomOption = topOption + getDisplayBounds().getHeight();
         }
 
         if (bottomOption > keys.length) {
@@ -99,7 +96,7 @@ public class MenuElement implements DisplayElement {
 
         if (currentOption >= bottomOption) {
             bottomOption = currentOption + 1;
-            topOption = bottomOption - bounds.getHeight();
+            topOption = bottomOption - getDisplayBounds().getHeight();
         }
 
         if (topOption < 0) {

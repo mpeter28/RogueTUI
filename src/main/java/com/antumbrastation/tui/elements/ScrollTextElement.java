@@ -1,8 +1,10 @@
 package com.antumbrastation.tui.elements;
 
-public class ScrollTextElement implements DisplayElement {
+import com.antumbrastation.tui.DisplayBounds;
+import com.antumbrastation.tui.DisplayBuffer;
 
-    private DisplayBounds bounds;
+public class ScrollTextElement extends DisplayElement {
+
     private String[] lines;
     private int[] colors;
     private int[] highlights;
@@ -10,7 +12,7 @@ public class ScrollTextElement implements DisplayElement {
     private boolean bottomToTop;
 
     public ScrollTextElement(boolean bottomToTop, DisplayBounds bounds) {
-        this.bounds = bounds;
+        setDisplayBounds(bounds);
         this.bottomToTop = bottomToTop;
 
         int height = bounds.getHeight();
@@ -40,7 +42,7 @@ public class ScrollTextElement implements DisplayElement {
     }
 
     public void pushToBuffer(DisplayBuffer view) {
-        view.setWritingBounds(bounds);
+        view.setWritingBounds(getDisplayBounds());
         view.writeFill(' ', -1, -1);
 
         if (bottomToTop) {
@@ -52,10 +54,6 @@ public class ScrollTextElement implements DisplayElement {
                 view.writeLine(lines[i], i, 0, colors[i], highlights[i]);
             }
         }
-    }
-
-    public DisplayBounds getDisplayBounds() {
-        return bounds;
     }
 
 }
