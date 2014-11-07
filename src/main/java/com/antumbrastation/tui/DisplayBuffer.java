@@ -79,6 +79,10 @@ public class DisplayBuffer {
         return bufferBounds;
     }
 
+    public DisplayBounds getWritingBounds() {
+        return writingBounds;
+    }
+
     public void moveDisplayBounds(int cornerRow, int cornerColumn) {
         bufferBounds = new DisplayBounds(cornerRow, cornerColumn,
                 bufferBounds.getHeight(), bufferBounds.getWidth());
