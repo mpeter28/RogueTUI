@@ -8,18 +8,28 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class InputJournal implements KeyListener, MouseListener, MouseMotionListener {
+
+    public static int NO_INPUT = 0;
+    public static int MOUSE_MOVED = 1;
+    public static int KEY_DOWN = 2;
+    public static int KEY_RELEASE = 3;
+    public static int MOUSE_DOWN = 4;
+    public static int MOUSE_CLICK = 5;
+
     private int rowHeight;
     private int columnWidth;
     private int currentMouseRow;
     private int currentMouseColumn;
+
     private BlockingQueue<JournalUpdate> updates;
 
-    private String inputEventType;
+    private int inputEventType;
+
     private char typedCharacter;
     private String keyName;
-    private int buttonNumber;
-
     private Set<String> keysDown;
+
+    private int buttonNumber;
     private Set<Integer> mouseButtonsDown;
     private int mouseRow;
     private int mouseColumn;
@@ -55,13 +65,13 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
     }
 
     private void cleanJournal() {
-        inputEventType = "None";
+        inputEventType = InputJournal.NO_INPUT;
         typedCharacter = 0;
-        keyName = null;
+        keyName = "";
         buttonNumber = MouseEvent.NOBUTTON;
     }
 
-    public String getInputEventType() {
+    public int getInputEventType() {
         return inputEventType;
     }
 
@@ -162,10 +172,10 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
             InputJournal.this.keyName = keyName;
             if (pressNotRelease) {
                 InputJournal.this.keysDown.add(keyName);
-                InputJournal.this.inputEventType = "KeyDown";
+                InputJournal.this.inputEventType = InputJournal.KEY_DOWN;
             } else {
                 InputJournal.this.keysDown.remove(keyName);
-                InputJournal.this.inputEventType = "KeyHit";
+                InputJournal.this.inputEventType = InputJournal.KEY_RELEASE;
             }
         }
     }
@@ -181,7 +191,7 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
         public void makeJournalChanges() {
             InputJournal.this.mouseRow = row;
             InputJournal.this.mouseColumn = column;
-            InputJournal.this.inputEventType = "MouseMove";
+            InputJournal.this.inputEventType = InputJournal.MOUSE_MOVED;
         }
     }
 
@@ -198,11 +208,10 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
             InputJournal.this.buttonNumber = button;
             if (pressNotRelease) {
                 InputJournal.this.mouseButtonsDown.add(button);
-
-                InputJournal.this.inputEventType = "MouseDown";
+                InputJournal.this.inputEventType = InputJournal.MOUSE_DOWN;
             } else {
                 InputJournal.this.mouseButtonsDown.remove(button);
-                InputJournal.this.inputEventType = "MouseClick";
+                InputJournal.this.inputEventType = InputJournal.MOUSE_CLICK;
             }
         }
     }
