@@ -10,14 +10,18 @@ public class TextPanel extends JPanel{
 
     private int rows, columns;
     private int gridWidth, gridHeight;
+    private float baseline;
 
     private char[][] text;
     private int[][] textColor;
     private int[][] highlight;
 
-    public TextPanel(ColorPalette colors, Font font, int rows, int columns, int gridHeight, int gridWidth) {
+    public TextPanel(ColorPalette colors, Font font, int rows, int columns,
+                     int gridHeight, int gridWidth, float baseline) {
         this.gridHeight = gridHeight;
         this.gridWidth = gridWidth;
+        this.baseline = baseline;
+
         this.colors = colors;
         this.font = font;
         this.rows = rows;
@@ -66,11 +70,6 @@ public class TextPanel extends JPanel{
 
                     GlyphVector v = font.createGlyphVector(g.getFontRenderContext(), glyph);
 
-                    float descent = (float) v.getVisualBounds().getMaxY();
-                    if (descent < 0) {
-                        descent = 0;
-                    }
-
                     float offset = (float) v.getVisualBounds().getMinX();
                     float width = (float) v.getVisualBounds().getWidth();
                     width = gridWidth - width;
@@ -78,7 +77,7 @@ public class TextPanel extends JPanel{
 
                     float squareX = col * gridWidth;
                     float squareY = (row + 1) * gridHeight;
-                    g.drawGlyphVector(v, squareX - offset + width, squareY - descent - 1);
+                    g.drawGlyphVector(v, squareX - offset + width, squareY - baseline);
                 }
             }
         }
