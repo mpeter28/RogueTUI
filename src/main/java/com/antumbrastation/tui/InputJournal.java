@@ -1,7 +1,6 @@
 package com.antumbrastation.tui;
 
 import java.awt.event.*;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -9,30 +8,14 @@ import java.util.concurrent.TimeUnit;
 
 public class InputJournal implements KeyListener, MouseListener, MouseMotionListener {
 
-    public static int NO_INPUT = 0;
-    public static int MOUSE_MOVED = 1;
-    public static int KEY_DOWN = 2;
-    public static int KEY_RELEASE = 3;
-    public static int MOUSE_DOWN = 4;
-    public static int MOUSE_CLICK = 5;
-
     private int rowHeight;
     private int columnWidth;
     private int currentMouseRow;
     private int currentMouseColumn;
 
-    private BlockingQueue<JournalUpdate> updates;
+    private BlockingQueue<SnapshotUpdate> updates;
 
-    private int inputEventType;
-
-    private char typedCharacter;
-    private String keyName;
-    private Set<String> keysDown;
-
-    private int buttonNumber;
-    private Set<Integer> mouseButtonsDown;
-    private int mouseRow;
-    private int mouseColumn;
+    private InputSnapshot currentSnapshot;
 
     public InputJournal(int rowHeight, int columnWidth) {
         this.rowHeight = rowHeight;
@@ -41,66 +24,29 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
         currentMouseColumn = -1;
         updates = new LinkedBlockingQueue<>();
 
-        cleanJournal();
-
-        keysDown = new HashSet<>();
-        mouseButtonsDown = new HashSet<>();
-        mouseRow = -1;
-        mouseColumn = -1;
+        currentSnapshot = new InputSnapshot();
     }
 
-    public boolean updateInput(int millisecondWait) {
-        cleanJournal();
+    public InputSnapshot updateInput(int millisecondWait) {
         try {
-            JournalUpdate update = updates.poll(millisecondWait, TimeUnit.MILLISECONDS);
+            SnapshotUpdate update = updates.poll(millisecondWait, TimeUnit.MILLISECONDS);
 
-            if (update == null)
-                return false;
-
-            update.makeJournalChanges();
-            return true;
+            if (update != null) {
+                currentSnapshot = update.makeSnapshotChanges(currentSnapshot);
+            } else {
+                currentSnapshot = noInputSnapshot(currentSnapshot);
+            }
         } catch (InterruptedException ignored) {
-            return false;
+            currentSnapshot = noInputSnapshot(currentSnapshot);
         }
+
+        return currentSnapshot;
     }
 
-    private void cleanJournal() {
-        inputEventType = InputJournal.NO_INPUT;
-        typedCharacter = 0;
-        keyName = "";
-        buttonNumber = MouseEvent.NOBUTTON;
-    }
-
-    public int getInputEventType() {
-        return inputEventType;
-    }
-
-    public char getTypedCharacter() {
-        return typedCharacter;
-    }
-
-    public String getKeyName() {
-        return keyName;
-    }
-
-    public int getButtonNumber() {
-        return buttonNumber;
-    }
-
-    public boolean isKeyDown(String key) {
-        return keysDown.contains(key);
-    }
-
-    public boolean isMouseButtonDown(int button) {
-        return mouseButtonsDown.contains(button);
-    }
-
-    public int getMouseRow() {
-        return mouseRow;
-    }
-
-    public int getMouseColumn() {
-        return mouseColumn;
+    private InputSnapshot noInputSnapshot(InputSnapshot snapshot) {
+        return new InputSnapshot(InputSnapshot.NO_INPUT, (char) 0, "",
+                snapshot.getKeysDown(), MouseEvent.NOBUTTON, snapshot.getMouseButtonsDown(),
+                snapshot.getMouseRow(), snapshot.getMouseColumn());
     }
 
     public void keyTyped(KeyEvent e) {
@@ -152,11 +98,11 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
         }
     }
 
-    private interface JournalUpdate {
-        public void makeJournalChanges();
+    private interface SnapshotUpdate {
+        public InputSnapshot makeSnapshotChanges(InputSnapshot previousSnapshot);
     }
 
-    private class KeyUpdate implements JournalUpdate {
+    private class KeyUpdate implements SnapshotUpdate {
         private char typedCharacter;
         private String keyName;
         private boolean pressNotRelease;
@@ -167,20 +113,25 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
             this.pressNotRelease = pressNotRelease;
         }
 
-        public void makeJournalChanges() {
-            InputJournal.this.typedCharacter = typedCharacter;
-            InputJournal.this.keyName = keyName;
+        public InputSnapshot makeSnapshotChanges(InputSnapshot previousSnapshot) {
+            Set<String> keysDown = previousSnapshot.getKeysDown();
+            int inputType;
+
             if (pressNotRelease) {
-                InputJournal.this.keysDown.add(keyName);
-                InputJournal.this.inputEventType = InputJournal.KEY_DOWN;
+                keysDown.add(keyName);
+                inputType = InputSnapshot.KEY_DOWN;
             } else {
-                InputJournal.this.keysDown.remove(keyName);
-                InputJournal.this.inputEventType = InputJournal.KEY_RELEASE;
+                keysDown.remove(keyName);
+                inputType = InputSnapshot.KEY_RELEASE;
             }
+
+            return new InputSnapshot(inputType, typedCharacter, keyName, keysDown,
+                    MouseEvent.NOBUTTON, previousSnapshot.getMouseButtonsDown(),
+                    previousSnapshot.getMouseRow(), previousSnapshot.getMouseColumn());
         }
     }
 
-    private class MouseMoveUpdate implements JournalUpdate {
+    private class MouseMoveUpdate implements SnapshotUpdate {
         private int row, column;
 
         private MouseMoveUpdate(int row, int column) {
@@ -188,14 +139,13 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
             this.column = column;
         }
 
-        public void makeJournalChanges() {
-            InputJournal.this.mouseRow = row;
-            InputJournal.this.mouseColumn = column;
-            InputJournal.this.inputEventType = InputJournal.MOUSE_MOVED;
+        public InputSnapshot makeSnapshotChanges(InputSnapshot previousSnapshot) {
+            return new InputSnapshot(InputSnapshot.MOUSE_MOVED, (char) 0, "", previousSnapshot.getKeysDown(),
+                    MouseEvent.NOBUTTON, previousSnapshot.getMouseButtonsDown(), row, column);
         }
     }
 
-    private class MouseButtonUpdate implements JournalUpdate {
+    private class MouseButtonUpdate implements SnapshotUpdate {
         private int button;
         private boolean pressNotRelease;
 
@@ -204,15 +154,20 @@ public class InputJournal implements KeyListener, MouseListener, MouseMotionList
             this.pressNotRelease = pressNotRelease;
         }
 
-        public void makeJournalChanges() {
-            InputJournal.this.buttonNumber = button;
+        public InputSnapshot makeSnapshotChanges(InputSnapshot previousSnapshot) {
+            Set<Integer> mouseButtonsDown = previousSnapshot.getMouseButtonsDown();
+            int inputType;
+
             if (pressNotRelease) {
-                InputJournal.this.mouseButtonsDown.add(button);
-                InputJournal.this.inputEventType = InputJournal.MOUSE_DOWN;
+                mouseButtonsDown.add(button);
+                inputType = InputSnapshot.MOUSE_DOWN;
             } else {
-                InputJournal.this.mouseButtonsDown.remove(button);
-                InputJournal.this.inputEventType = InputJournal.MOUSE_CLICK;
+                mouseButtonsDown.remove(button);
+                inputType = InputSnapshot.MOUSE_CLICK;
             }
+
+            return new InputSnapshot(inputType, (char) 0, "", previousSnapshot.getKeysDown(), button,
+                    mouseButtonsDown, previousSnapshot.getMouseRow(), previousSnapshot.getMouseColumn());
         }
     }
 }
