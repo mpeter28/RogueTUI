@@ -1,4 +1,4 @@
-package com.antumbrastation.tui;
+package com.antumbrastation.tui.input;
 
 import java.awt.event.MouseEvent;
 import java.util.HashSet;

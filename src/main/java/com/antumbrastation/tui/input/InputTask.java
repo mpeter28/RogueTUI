@@ -1,4 +1,4 @@
-package com.antumbrastation.tui;
+package com.antumbrastation.tui.input;
 
 public abstract class InputTask {
 

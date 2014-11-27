@@ -1,4 +1,4 @@
-package com.antumbrastation.tui;
+package com.antumbrastation.tui.input;
 
 import org.junit.Assert;
 import org.junit.Test;
