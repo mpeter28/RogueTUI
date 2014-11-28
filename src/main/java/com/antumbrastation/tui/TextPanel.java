@@ -44,42 +44,56 @@ public class TextPanel extends JPanel{
             return;
         }
 
-        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
-        g.setFont(font);
-
-        char[] glyph = new char[1];
+        setRenderingHints(g);
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < columns; col++) {
-                if (textColor[row][col] != -1)
-                    g.setColor(colors.indexToColor(textColor[row][col]));
-                else
-                    g.setColor(colors.defaultTextColor());
-
-                if (highlight[row][col] != -1)
-                    g.setBackground(colors.indexToColor(highlight[row][col]));
-                else
-                    g.setBackground(colors.defaultHighlightColor());
+                setTextColor(g, textColor[row][col]);
+                setHighlightColor(g, highlight[row][col]);
 
                 g.clearRect(col * gridWidth, row * gridHeight, gridWidth,
                         gridHeight);
 
                 if (text[row][col] != 0) {
-                    glyph[0] = text[row][col];
-
-                    GlyphVector v = font.createGlyphVector(g.getFontRenderContext(), glyph);
-
-                    float offset = (float) v.getVisualBounds().getMinX();
-                    float width = (float) v.getVisualBounds().getWidth();
-                    width = gridWidth - width;
-                    width /= 2;
-
-                    float squareX = col * gridWidth;
-                    float squareY = (row + 1) * gridHeight;
-                    g.drawGlyphVector(v, squareX - offset + width, squareY - baseline);
+                    GlyphVector v = getGlyphVector(g, text[row][col]);
+                    renderGlyphVector(g, v, row, col);
                 }
             }
         }
+    }
+
+    public void setRenderingHints(Graphics2D graphics2D) {
+        graphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+    }
+
+    public void setTextColor(Graphics2D graphics2D, int colorIndex) {
+        if (colorIndex != -1)
+            graphics2D.setColor(colors.indexToColor(colorIndex));
+        else
+            graphics2D.setColor(colors.defaultTextColor());
+    }
+
+    public void setHighlightColor(Graphics2D graphics2D, int colorIndex) {
+        if (colorIndex != -1)
+            graphics2D.setBackground(colors.indexToColor(colorIndex));
+        else
+            graphics2D.setBackground(colors.defaultHighlightColor());
+    }
+
+    public GlyphVector getGlyphVector(Graphics2D graphics2D, char character) {
+        char[] glyphText = new char[] {character};
+        return font.createGlyphVector(graphics2D.getFontRenderContext(), glyphText);
+    }
+
+    public void renderGlyphVector(Graphics2D graphics2D, GlyphVector glyphVector, int row, int column) {
+        float offset = (float) glyphVector.getVisualBounds().getMinX();
+        float width = (float) glyphVector.getVisualBounds().getWidth();
+        width = gridWidth - width;
+        width /= 2;
+
+        float squareX = column * gridWidth;
+        float squareY = (row + 1) * gridHeight;
+        graphics2D.drawGlyphVector(glyphVector, squareX - offset + width, squareY - baseline);
     }
 }
