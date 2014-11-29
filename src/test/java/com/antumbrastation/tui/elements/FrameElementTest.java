@@ -22,7 +22,7 @@ public class FrameElementTest {
         FrameElement frame = new FrameElement(new DisplayBounds(1,1,6,6));
         frame.addHorizontalLine(0,1,5,'=',1,1);
 
-        DisplayBuffer buffer = new DisplayBuffer(new DisplayBounds(10,10));
+        DisplayBuffer buffer = new DisplayBuffer(10, 10);
         frame.pushToBuffer(buffer);
 
         Assert.assertEquals('=', buffer.getText()[1][2]);
@@ -49,7 +49,7 @@ public class FrameElementTest {
         FrameElement frame = new FrameElement(new DisplayBounds(1,1,6,6));
         frame.addVerticalLine(1,0,5,'=',1,1);
 
-        DisplayBuffer buffer = new DisplayBuffer(new DisplayBounds(10,10));
+        DisplayBuffer buffer = new DisplayBuffer(10, 10);
         frame.pushToBuffer(buffer);
 
         Assert.assertEquals('=', buffer.getText()[2][1]);
@@ -78,7 +78,7 @@ public class FrameElementTest {
         frame.addVerticalLine(0,0,5,'=',-1,-1);
         frame.addHorizontalLine(0,0,3,'-',2,2);
 
-        DisplayBuffer buffer = new DisplayBuffer(new DisplayBounds(10,10));
+        DisplayBuffer buffer = new DisplayBuffer(10, 10);
         frame.pushToBuffer(buffer);
 
         Assert.assertEquals('-', buffer.getText()[1][1]);

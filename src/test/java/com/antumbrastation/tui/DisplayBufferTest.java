@@ -7,7 +7,7 @@ public class DisplayBufferTest {
 
     @Test
     public void properArraySizesTest() {
-        DisplayBuffer buffer = new DisplayBuffer(new DisplayBounds(5, 4));
+        DisplayBuffer buffer = new DisplayBuffer(5, 4);
 
         char[][] text = buffer.getText();
         int[][] textColor = buffer.getTextColor();
@@ -26,12 +26,7 @@ public class DisplayBufferTest {
 
     @Test
     public void properBoundsFromConstructorTest() {
-        DisplayBuffer buffer = new DisplayBuffer(new DisplayBounds(1, 2, 3, 4));
-
-        Assert.assertEquals(1, buffer.getDisplayBounds().getCornerRow());
-        Assert.assertEquals(2, buffer.getDisplayBounds().getCornerColumn());
-        Assert.assertEquals(3, buffer.getDisplayBounds().getHeight());
-        Assert.assertEquals(4, buffer.getDisplayBounds().getWidth());
+        DisplayBuffer buffer = new DisplayBuffer(3, 4);
 
         Assert.assertEquals(0, buffer.getWritingBounds().getCornerRow());
         Assert.assertEquals(0, buffer.getWritingBounds().getCornerColumn());
@@ -41,7 +36,7 @@ public class DisplayBufferTest {
 
     @Test
     public void setWritingBoundsTest() {
-        DisplayBuffer buffer = new DisplayBuffer(new DisplayBounds(1, 2, 3, 4));
+        DisplayBuffer buffer = new DisplayBuffer(3, 4);
         buffer.setWritingBounds(new DisplayBounds(2, 2, 2, 2));
 
         Assert.assertEquals(2, buffer.getWritingBounds().getCornerRow());
@@ -51,19 +46,8 @@ public class DisplayBufferTest {
     }
 
     @Test
-    public void moveDisplayBoundsTest() {
-        DisplayBuffer buffer = new DisplayBuffer(new DisplayBounds(1, 2, 3, 4));
-        buffer.moveDisplayBounds(7, 5);
-
-        Assert.assertEquals(7, buffer.getDisplayBounds().getCornerRow());
-        Assert.assertEquals(5, buffer.getDisplayBounds().getCornerColumn());
-        Assert.assertEquals(3, buffer.getDisplayBounds().getHeight());
-        Assert.assertEquals(4, buffer.getDisplayBounds().getWidth());
-    }
-
-    @Test
     public void writeCharTest() {
-        DisplayBuffer buffer = new DisplayBuffer(new DisplayBounds(7, 7));
+        DisplayBuffer buffer = new DisplayBuffer(7, 7);
         buffer.setWritingBounds(new DisplayBounds(2, 2, 2, 2));
 
         buffer.writeChar('a', -1, 1, 1, 1);
@@ -76,14 +60,20 @@ public class DisplayBufferTest {
         int[][] textColor = buffer.getTextColor();
         int[][] highlightColor = buffer.getHighlightColor();
 
+        Assert.assertEquals(0, text[1][2]);
+        Assert.assertEquals(0, text[2][1]);
         Assert.assertEquals('a', text[3][3]);
         Assert.assertEquals(0, text[6][6]);
         Assert.assertEquals(0, text[5][4]);
 
+        Assert.assertEquals(0, textColor[1][2]);
+        Assert.assertEquals(0, textColor[2][1]);
         Assert.assertEquals(1, textColor[3][3]);
         Assert.assertEquals(0, textColor[6][6]);
         Assert.assertEquals(0, textColor[5][4]);
 
+        Assert.assertEquals(0, highlightColor[1][2]);
+        Assert.assertEquals(0, highlightColor[2][1]);
         Assert.assertEquals(1, highlightColor[3][3]);
         Assert.assertEquals(0, highlightColor[6][6]);
         Assert.assertEquals(0, highlightColor[5][4]);
@@ -101,7 +91,7 @@ public class DisplayBufferTest {
 
     @Test
     public void writeLineTest() {
-        DisplayBuffer buffer = new DisplayBuffer(new DisplayBounds(0, 0, 5, 5));
+        DisplayBuffer buffer = new DisplayBuffer(5, 5);
         buffer.writeLine("A B C", 0, 0, 1, 1);
         buffer.writeLine("ABCDE", 1, 2, 2, 2);
         buffer.writeLine("ABCDE", 5, 0, 2, 2);
@@ -133,7 +123,7 @@ public class DisplayBufferTest {
 
     @Test
     public void writeFillTest() {
-        DisplayBuffer buffer = new DisplayBuffer(new DisplayBounds(0, 0, 10, 10));
+        DisplayBuffer buffer = new DisplayBuffer(10, 10);
         buffer.writeFill('a', 2, 3);
 
         for (int i = 0; i < 10; i++)
@@ -180,11 +170,11 @@ public class DisplayBufferTest {
 
     @Test
     public void copyToBufferTest() {
-        DisplayBuffer copyTo = new DisplayBuffer(new DisplayBounds(0, 0, 10, 10));
-        DisplayBuffer copyFrom = new DisplayBuffer(new DisplayBounds(2, 2, 5, 5));
+        DisplayBuffer copyTo = new DisplayBuffer(10, 10);
+        DisplayBuffer copyFrom = new DisplayBuffer(5, 5);
 
         copyFrom.writeFill('a', 1, 1);
-        copyFrom.copyToBuffer(copyTo);
+        copyFrom.copyToBuffer(copyTo, 2, 2);
 
         for (int i = 0; i < 10; i++)
             for (int j = 0; j < 10; j++) {

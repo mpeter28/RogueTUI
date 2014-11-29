@@ -8,12 +8,9 @@ public class DisplayBuffer {
     private DisplayBounds bufferBounds;
     private DisplayBounds writingBounds;
 
-    public DisplayBuffer(DisplayBounds bounds) {
-        bufferBounds = bounds;
-        writingBounds = new DisplayBounds(bounds.getHeight(), bounds.getWidth());
-
-        int rows = bounds.getHeight();
-        int columns = bounds.getWidth();
+    public DisplayBuffer(int rows, int columns) {
+        bufferBounds = new DisplayBounds(rows, columns);
+        writingBounds = new DisplayBounds(rows, columns);
 
         textColor = new int[rows][columns];
         highlightColor = new int[rows][columns];
@@ -34,6 +31,10 @@ public class DisplayBuffer {
 
     public void setWritingBounds(DisplayBounds writingBounds) {
         this.writingBounds = writingBounds;
+    }
+
+    public DisplayBounds getWritingBounds() {
+        return writingBounds;
     }
 
     public void writeChar(char character, int row, int column, int color, int highlight) {
@@ -64,27 +65,15 @@ public class DisplayBuffer {
                 writeChar(fill, i, j, color, highlight);
     }
 
-    public void copyToBuffer(DisplayBuffer copyTo) {
-        copyTo.setWritingBounds(bufferBounds);
-
+    public void copyToBuffer(DisplayBuffer copyTo, int cornerRow, int cornerColumn) {
         int rows = bufferBounds.getHeight();
         int columns = bufferBounds.getWidth();
+
+        copyTo.setWritingBounds(new DisplayBounds(cornerRow, cornerColumn, rows, columns));
 
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
                 copyTo.writeChar(text[i][j], i, j, textColor[i][j], highlightColor[i][j]);
     }
 
-    public DisplayBounds getDisplayBounds() {
-        return bufferBounds;
-    }
-
-    public DisplayBounds getWritingBounds() {
-        return writingBounds;
-    }
-
-    public void moveDisplayBounds(int cornerRow, int cornerColumn) {
-        bufferBounds = new DisplayBounds(cornerRow, cornerColumn,
-                bufferBounds.getHeight(), bufferBounds.getWidth());
-    }
 }
